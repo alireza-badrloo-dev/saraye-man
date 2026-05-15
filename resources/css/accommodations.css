@@ -1,0 +1,51 @@
+/* وارد کردن استایل اصلی - این خط باید اولین خط فایل CSS شما باشد */
+@import 'nouislider/dist/nouislider.css';
+
+.noUi-target {
+    height: 4px !important;
+    /* نوار نازک‌تر */
+    background: #e0e0e0;
+    /* رنگ پس‌زمینه نوار */
+    border: none;
+    box-shadow: none;
+    border-radius: 999px;
+    /* گرد کردن لبه‌های نوار */
+}
+
+/* نوار فعال بین دو هندل */
+.noUi-connect {
+
+    background: #ff6a00 !important;
+    /* رنگ آبی برای نوار فعال */
+    border-radius: 999px;
+}
+
+/* هندل‌ها */
+.noUi-handle {
+    width: 16px !important;
+    /* کمی بزرگتر از 8px برای دید بهتر */
+    height: 16px !important;
+    border-radius: 50% !important;
+    /* گرد کردن */
+    background: #ffffff;
+    /* رنگ داخل هندل */
+    border: 12px;
+    border-color: #ff6a00 !important;
+    cursor: grab !important;
+    /* آیکون دست برای کلیک */
+    
+    /* تنظیم موقعیت هندل برای قرارگیری صحیح روی نوار */
+    top: -7px !important;
+    /* این مقدار به اندازه نصف ارتفاع نوار (4px) + نصف ارتفاع هندل (8px) منهای 2 پیکسل حاشیه است */
+    left: -8px !important;
+    
+    /* این مقدار نصف عرض هندل است تا مرکز هندل روی خط نوار قرار بگیرد */
+
+}
+
+.noUi-handle::before,
+.noUi-handle::after {
+    display: none !important;
+}
+
+/* افکت هنگام هاور و کلیک */

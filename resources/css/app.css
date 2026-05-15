@@ -1,0 +1,125 @@
+
+@import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+@import '@fortawesome/fontawesome-free/css/solid.min.css';
+@import '@fortawesome/fontawesome-free/css/brands.min.css';
+@import '@fortawesome/fontawesome-free/css/regular.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+
+
+@font-face {
+    font-family: 'portada';
+    src: url(../../public/fonts/PortadaARA-Regular.otf);
+}
+
+@font-face {
+    font-family: 'portadabold';
+    src: url(../../public/fonts/PortadaARA-Bold.otf);
+}
+
+body {
+    font-family: 'portada';
+}
+
+h1 {
+    font-family: 'portadabold';
+}
+
+.city-banner {
+    width: 100%;
+    height: 260px;
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: opacity .15s ease-out;
+    margin-top: -1px;
+}
+
+.city-banner::before {
+    content: "";
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    top: 0;
+    background: linear-gradient(180deg, #fff, #fff0);
+}
+
+.city-banner::after {
+    content: "";
+    width: 100%;
+    height: 50%;
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(0deg, #fff, #fff0);
+}
+
+@layer utilities {
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.96);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+}
+
+/* استایل‌های عمومی */
+
+.swiper-container {
+    width: 100%;
+    height: 240px;
+    padding: 0, 80;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.swiper-second {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+
+
+#first img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#two img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+
+}
+
+.swiper-pagination-bullet {
+    background: #fff !important;
+}
+
+.swiper-pagination-bullet-active {
+
+    background: #ffffff !important;
+    opacity: 100% !important;
+    background-color: #ffffff !important;
+
+}
