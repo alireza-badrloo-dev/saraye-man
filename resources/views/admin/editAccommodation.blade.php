@@ -488,7 +488,7 @@
                 </div>
             </div>
 
-            <!-- در editAccommodation.blade.php، بعد از بخش امکانات -->
+
 
             <!-- اتاق‌های اقامتگاه -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
@@ -540,25 +540,28 @@
 
             <script>
                 let roomCount = {{ $accommodation->rooms->count() }};
-                <input type="hidden" name="rooms[{{ $index }}][id]" value="{{ $room->id }}">
+
                 function addRoom() {
+                    const container = document.getElementById('rooms-container');
+                    const newIndex = roomCount;
+
                     const html = `
-        <div class="room-item grid grid-cols-1 md:grid-cols-6 gap-3 mb-4 p-4 border rounded-lg">
-            <input type="text" name="rooms[${roomCount}][title]" placeholder="عنوان اتاق" class="border rounded-lg p-2">
-            <input type="text" name="rooms[${roomCount}][capacity]" placeholder="ظرفیت (نفر)" class="border rounded-lg p-2">
-            <input type="text" name="rooms[${roomCount}][beds]" placeholder="تخت‌ها" class="border rounded-lg p-2">
-            <input type="number" name="rooms[${roomCount}][price]" placeholder="قیمت (تومان)" class="border rounded-lg p-2">
-            <input type="file" name="rooms[${roomCount}][image]" accept="image/*" class="border rounded-lg p-1">
-            <button type="button" onclick="this.closest('.room-item').remove()" class="bg-red-500 text-white px-3 py-2 rounded-lg">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
-                    document.getElementById('rooms-container').insertAdjacentHTML('beforeend', html);
+            <div class="room-item grid grid-cols-1 md:grid-cols-6 gap-3 mb-4 p-4 border rounded-lg">
+                <input type="text" name="rooms[${newIndex}][title]" placeholder="عنوان اتاق" class="border rounded-lg p-2" required>
+                <input type="text" name="rooms[${newIndex}][capacity]" placeholder="ظرفیت (نفر)" class="border rounded-lg p-2" required>
+                <input type="text" name="rooms[${newIndex}][beds]" placeholder="تخت‌ها" class="border rounded-lg p-2" required>
+                <input type="number" name="rooms[${newIndex}][price]" placeholder="قیمت (تومان)" class="border rounded-lg p-2" required>
+                <input type="file" name="rooms[${newIndex}][image]" accept="image/*" class="border rounded-lg p-1">
+                <button type="button" onclick="this.closest('.room-item').remove()" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+
+                    container.insertAdjacentHTML('beforeend', html);
                     roomCount++;
                 }
             </script>
-
             <!-- دکمه‌های ارسال -->
             <div class="flex justify-end gap-3">
                 <a href="{{ route('admin.accommodation') }}"

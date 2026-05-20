@@ -2,29 +2,6 @@ import './bootstrap';
 import '@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css';
 import '@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js';
 
-const btn = document.getElementById('userMenuBtn');
-const dropdown = document.getElementById('userDropdown');
-
-if (btn) {
-    btn.addEventListener('click', function () {
-        dropdown.classList.toggle('hidden');
-    });
-
-    window.addEventListener('click', function (e) {
-        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
-}
-
-
-
-
-// استفاده
-window.jalaliDatepicker.startWatch({
-
-});
-
 import autoprefixer from 'autoprefixer';
 // // در فایل app.js خودتان
 
@@ -146,3 +123,29 @@ function cancelEdit() {
 }
 
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    // تبدیل تاریخ امروز به شمسی برای minDate
+    const today = new Date();
+    const todayJalali = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(today).replace(/\//g, '/');
+
+    // تنظیم flatpickr
+    flatpickr(".datepicker", {
+        locale: "fa",
+        dateFormat: "Y/m/d",
+        minDate: todayJalali, // تاریخ امروز شمسی
+        disableMobile: true,
+        onChange: function (selectedDates, dateStr, instance) {
+            if (instance.element.name === 'check_in') {
+                const checkOut = document.querySelector('input[name="check_out"]');
+                if (checkOut && checkOut._flatpickr) {
+                    checkOut._flatpickr.set('minDate', dateStr);
+                }
+            }
+        }
+    });
+});

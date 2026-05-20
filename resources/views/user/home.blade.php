@@ -3,9 +3,19 @@
     <div>
 
         <div class="class= mx-1  md:mx-20 xl:mx-40">
-            @session('success')
-                <div class="w-full p-2 bg-green-100 border border-green-500 text-green-500 rounded-lg">{{ $value }}</div>
-            @endsession
+            <!-- نمایش پیام موفقیت -->
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- نمایش پیام خطا -->
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+                    {{ session('error') }}
+                </div>
+            @endif
         </div>
         <picture class="city-banner">
             <img class="w-full object-cover" src="/image/home.jpg" alt="home" />
@@ -87,10 +97,11 @@
                             <a href="{{ route('details', ['id' => $item->id]) }}" class="space-y-3">
 
 
-                             
+
 
                                 @if ($firstImage)
-                                    <img class="w-full rounded-md" src="{{ asset('storage/uplouds/' . $firstImage) }}" alt="{{ $item->title }}">
+                                    <img class="w-full rounded-md" src="{{ asset('storage/uplouds/' . $firstImage) }}"
+                                        alt="{{ $item->title }}">
                                 @endif
 
 

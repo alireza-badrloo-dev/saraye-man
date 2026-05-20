@@ -12,7 +12,7 @@ class accommodationController extends Controller
     public function index()
     {
         // $data = Accommodation::with('rooms');
-         $data = Accommodation::withMin('rooms', 'price')->get();
+         $data = Accommodation::where('status' , 'active')->withMin('rooms', 'price')->get();
         
         
 

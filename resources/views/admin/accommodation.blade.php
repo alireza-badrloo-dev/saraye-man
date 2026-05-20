@@ -319,7 +319,7 @@
                 </div>
             </div>
 
-           
+
         </div>
 
         <!-- بخش دسترسی سریع -->
@@ -333,26 +333,15 @@
                         <span class="text-sm text-gray-700">اقامتگاه جدید</span>
                     </a>
 
-                    <a href="{{ route('admin.accommodation.report') }}"
-                        class="bg-white rounded-lg p-3 text-center hover:shadow-md transition-all group hover:translate-y-[-2px]">
-                        <i class="fas fa-chart-bar text-indigo-600 text-2xl mb-2 block"></i>
-                        <span class="text-sm text-gray-700">گزارش اقامتگاه‌ها</span>
-                    </a>
-                    <button onclick="exportToExcel()"
+                    
+                    <a href=""
                         class="bg-white rounded-lg p-3 text-center hover:shadow-md transition-all group hover:translate-y-[-2px]">
                         <i class="fas fa-download text-indigo-600 text-2xl mb-2 block"></i>
                         <span class="text-sm text-gray-700">خروجی Excel</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
-@push('scripts')
-    <script>
-        function exportToExcel() {
-            window.location.href = "{{ route('admin.accommodation.export') }}";
-        }
-    </script>
-@endpush

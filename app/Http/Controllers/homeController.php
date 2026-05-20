@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 
 class homeController extends Controller
 {
-     public function index(){
-        
-        $data = Accommodation::withMin('rooms', 'price')->get();
+    public function index()
+    {
+
+        $data = Accommodation::where('status', 'active')->withMin('rooms', 'price')->get();
         $city = City::all();
-        
-        return view('user.home' , compact('data', 'city' ));
+
+        return view('user.home', compact('data', 'city'));
     }
 }

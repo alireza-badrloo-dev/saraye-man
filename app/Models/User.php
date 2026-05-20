@@ -18,6 +18,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'users';
     protected $fillable = [
         'email',
         'password',
@@ -29,7 +30,8 @@ class User extends Authenticatable
         'postal_code',
         'gender',
         'birth_date',
-        'address'
+        'address',
+        'favourites',
     ];
 
     /**
@@ -52,6 +54,46 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'favourites' => 'array',  // این رو اضافه کن
         ];
+    }
+
+    // ========== متدهای علاقه‌مندی ==========
+
+    public function addFavourite($id)
+    {
+        $favourites = $this->favourites ?? [];
+        if (!in_array($id, $favourites)) {
+            $favourites[] = $id;
+            $this->favourites = $favourites;
+            $this->save();
+        }
+    }
+
+    public function removeFavourite($id)
+    {
+        $favourites = $this->favourites ?? [];
+        if (($key = array_search($id, $favourites)) !== false) {
+            unset($favourites[$key]);
+            $this->favourites = array_values($favourites);
+            $this->save();
+        }
+    }
+
+    public function hasFavourite($id)
+    {
+        $favourites = $this->favourites ?? [];
+        return in_array($id, $favourites);
+    }
+
+    public function getFavourites()
+    {
+        $ids = $this->favourites ?? [];
+        return Accommodation::whereIn('id', $ids)->get();
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

@@ -42,7 +42,7 @@
 
                 <a href="{{ route('admin.accommodation') }}"
                     class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
-       {{ request()->is('accommodation**')
+       {{ request()->is('admin/accommodation**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
                     <i class="fa-regular fa-building w-5 text-lg"></i>

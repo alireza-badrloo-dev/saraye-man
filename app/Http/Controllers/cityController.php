@@ -10,19 +10,19 @@ class CityController extends Controller // بهتر است نام کلاس با 
 {
     public function index($id)
     {
-        // ابتدا شهر و اقامتگاه‌هایش را با Eager Loading بارگذاری می‌کنیم
-        $city = City::with('accommodations.rooms')->findOrFail($id);
 
+        $city = City::with(['accommodations' => function ($query) {
+            $query->where('status', 'active')
+                ->withMin('rooms', 'price')
+                ->withCount('rooms')
+                ->with('rooms');
+        }])->findOrFail($id);
 
+        
+        $minPrice = $city->accommodations->min('rooms_min_price');
 
+        
 
-        $allPrices = collect();
-        foreach ($city->accommodations as $acc) {
-            $allPrices = $allPrices->merge($acc->rooms->pluck('price'));
-        }
-        $minPrice = $allPrices->isNotEmpty() ? $allPrices->min() : null;
-
-        // حالا هم شهر و اقامتگاه‌ها و هم کمترین قیمت را به ویو ارسال می‌کنیم
         return view('user.city', compact('city', 'minPrice'));
     }
 }

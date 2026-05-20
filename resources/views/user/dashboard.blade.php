@@ -43,7 +43,7 @@
                         </div>
                     </a>
                     <a href="{{ route('user.reserve') }}"
-                        class="{{ request()->is('user/reserve') ? 'border-e-2 border-e-orange-500 text-orange-500 bg-orange-50 px-4' : 'hover:bg-orange-50 cursor-pointer hover:text-orange-500  text-gray-800 transition duration-300 w-full  px-4' }} ">
+                        class="{{ request()->is('user/reservation') ? 'border-e-2 border-e-orange-500 text-orange-500 bg-orange-50 px-4' : 'hover:bg-orange-50 cursor-pointer hover:text-orange-500  text-gray-800 transition duration-300 w-full  px-4' }} ">
                         <div class="py-4 flex items-center justify-start">
                             <div class="me-4">
                                 <i class="fa-regular fa-file-lines"></i>
@@ -68,8 +68,8 @@
                             </div>
                         </div>
                     </a>
-                    <a href="{{ route('user.favorite') }}"
-                        class="{{ request()->is('user/favorite') ? 'border-e-2 border-e-orange-500 text-orange-500 bg-orange-50 px-4' : 'hover:bg-orange-50 cursor-pointer hover:text-orange-500  text-gray-800 transition duration-300 w-full  px-4' }}">
+                    <a href="{{ route('user.favourite') }}"
+                        class="{{ request()->is('user/favourites') ? 'border-e-2 border-e-orange-500 text-orange-500 bg-orange-50 px-4' : 'hover:bg-orange-50 cursor-pointer hover:text-orange-500  text-gray-800 transition duration-300 w-full  px-4' }}">
                         <div class="py-4 flex items-center justify-start">
                             <div class="me-4">
                                <i class="fa-regular fa-heart"></i>

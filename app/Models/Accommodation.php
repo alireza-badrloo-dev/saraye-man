@@ -8,7 +8,7 @@ class Accommodation extends Model
 {
     protected $table = 'accommodations';
     protected $guarded = [];
-    
+
     protected $casts = [
         'images' => 'array',
         'general_facilities' => 'array',
@@ -57,9 +57,24 @@ class Accommodation extends Model
     {
         return $this->hasMany(Room::class);
     }
-    
+
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->where('status', 'approved');
+    }
+
+    public function allComments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

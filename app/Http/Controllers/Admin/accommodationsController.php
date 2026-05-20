@@ -9,8 +9,10 @@ use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use \App\Exports\AccommodationsExport;
+use \Maatwebsite\Excel\Facades\Excel;
 
-class accommodationsController extends Controller
+class AccommodationsController extends Controller
 {
     // در کنترلر AccommodationController
     public function index(Request $request)
@@ -329,4 +331,53 @@ class accommodationsController extends Controller
             return back()->with('error', 'خطا در حذف اقامتگاه: ' . $e->getMessage());
         }
     }
+
+
+
+   public function downloadExcel()
+{
+    // دریافت داده‌ها
+    $accommodations = Accommodation::where('status', 'active')
+        ->with('city')
+        ->withMin('rooms', 'price')
+        ->get();
+    
+    // اسم فایل
+    $fileName = 'اقامتگاه_' . date('Y-m-d') . '.csv';
+    
+    // هدرهای دانلود
+    $headers = [
+        'Content-Type' => 'text/csv; charset=UTF-8',
+        'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        'Pragma' => 'no-cache',
+        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        'Expires' => '0',
+    ];
+    
+    // ساخت محتوا
+    $callback = function() use ($accommodations) {
+        $file = fopen('php://output', 'w');
+        
+        // اضافه کردن BOM برای UTF-8 فارسی
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        // هدرهای ستون‌ها
+        fputcsv($file, ['شناسه', 'عنوان اقامتگاه', 'شهر', 'وضعیت', 'حداقل قیمت (تومان)']);
+        
+        // داده‌ها
+        foreach ($accommodations as $item) {
+            fputcsv($file, [
+                $item->id,
+                $item->title,
+                $item->city->name ?? 'نامشخص',
+                $item->status == 'active' ? 'فعال' : 'غیرفعال',
+                number_format($item->rooms_min_price ?? 0) . ' تومان'
+            ]);
+        }
+        
+        fclose($file);
+    };
+    
+    return response()->stream($callback, 200, $headers);
+}
 }
