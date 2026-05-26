@@ -21,62 +21,74 @@
                 <img class="w-16" src="image/Artboard 2.svg" alt="">
                 <h1 class="text-white text-xl">سرای من</h1>
             </div>
-            <nav class="px-4 space-y-1">
-                <a href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+            <nav class="flex flex-col h-full justify-between px-4 space-y-1">
+                <div class="">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
        {{ request()->is('dashboard')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa-regular fa-home w-5 text-lg"></i>
-                    <span class="text-sm font-medium">داشبورد</span>
-                </a>
+                        <i class="fa-regular fa-home w-5 text-lg"></i>
+                        <span class="text-sm font-medium">داشبورد</span>
+                    </a>
 
-                <a href="{{ route('admin.reserve') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
-       {{ request()->is('reserve')
+                    <a href="{{ route('admin.reserve') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/reserve**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa-regular fa-file-lines w-5 text-lg"></i>
-                    <span class="text-sm font-medium">رزرو ها</span>
-                </a>
+                        <i class="fa-regular fa-file-lines w-5 text-lg"></i>
+                        <span class="text-sm font-medium">رزرو ها</span>
+                    </a>
 
-                <a href="{{ route('admin.accommodation') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+                    <a href="{{ route('admin.accommodation') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
        {{ request()->is('admin/accommodation**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa-regular fa-building w-5 text-lg"></i>
-                    <span class="text-sm font-medium">اقامتگاه ها</span>
-                </a>
+                        <i class="fa-regular fa-building w-5 text-lg"></i>
+                        <span class="text-sm font-medium">اقامتگاه ها</span>
+                    </a>
 
-               
 
-                <a href="{{ route('admin.users') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
-       {{ request()->is('users')
+
+                    <a href="{{ route('admin.users') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/users**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa fa-users w-5 text-lg"></i>
-                    <span class="text-sm font-medium">کاربران</span>
-                </a>
+                        <i class="fa fa-users w-5 text-lg"></i>
+                        <span class="text-sm font-medium">کاربران</span>
+                    </a>
 
-                <a href="{{ route('admin.reports') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+                    <a href="{{ route('admin.admins') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
        {{ request()->is('reports')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa fa-chart-line w-5 text-lg"></i>
-                    <span class="text-sm font-medium">گزارشات مالی</span>
-                </a>
+                        <i class="fas fa-user-shield w-5 text-lg"></i>
+                        <span class="text-sm font-medium">ادمین ها</span>
+                    </a>
 
-                <a href="{{ route('admin.comments') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
-       {{ request()->is('comments')
+                    <a href="{{ route('admin.comments') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/comments**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                    <i class="fa-regular fa-comments w-5 text-lg"></i>
-                    <span class="text-sm font-medium">نظرات و پیشنهادات</span>
-                </a>
+                        <i class="fa-regular fa-comments w-5 text-lg"></i>
+                        <span class="text-sm font-medium">نظرات</span>
+                    </a>
+
+                </div>
+                <!-- فرم خروج از سیستم -->
+                <form action="{{ route('admin.logout') }}" method="POST" class="mt-auto pb-4">
+                    @csrf
+                    <button type="submit"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 w-full text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5">
+                        <i class="fas fa-sign-out-alt w-5 text-lg"></i>
+                        <span class="text-sm font-medium">خروج از سیستم</span>
+                    </button>
+                </form>
             </nav>
         </div>
     </div>

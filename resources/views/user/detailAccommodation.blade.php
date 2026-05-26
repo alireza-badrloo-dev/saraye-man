@@ -52,7 +52,7 @@
                 <div
                     class="flex p-2 justify-between items-center bg-green-100 text-green-500 border border-green-500 rounded-md">
                     <p>امتیازات کاربران</p>
-                    <p>{{ number_format($data->rating, 1) }} از 10</p>
+                    <p>{{ number_format($averageRating,1) }} از 10</p>
                 </div>
             </div>
         </div>

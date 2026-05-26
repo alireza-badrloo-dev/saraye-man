@@ -32,6 +32,7 @@ class User extends Authenticatable
         'birth_date',
         'address',
         'favourites',
+        'status',
     ];
 
     /**
@@ -54,7 +55,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'favourites' => 'array',  // این رو اضافه کن
+            'favourites' => 'array',  
+            'status' => 'string', 
         ];
     }
 

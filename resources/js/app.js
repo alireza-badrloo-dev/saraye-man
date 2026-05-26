@@ -149,3 +149,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
+// المنت‌های مربوط به dropdown
+const userMenuBtn = document.getElementById('userMenuBtn');
+const userDropdown = document.getElementById('userDropdown');
+
+// باز و بسته کردن dropdown با کلیک روی دکمه
+if (userMenuBtn && userDropdown) {
+    userMenuBtn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        userDropdown.classList.toggle('hidden');
+    });
+
+    // بستن dropdown با کلیک خارج از آن
+    document.addEventListener('click', function (event) {
+        if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+            userDropdown.classList.add('hidden');
+        }
+    });
+
+    // جلوگیری از بسته شدن dropdown هنگام کلیک روی خود dropdown
+    userDropdown.addEventListener('click', function (event) {
+        event.stopPropagation();
+    });
+}

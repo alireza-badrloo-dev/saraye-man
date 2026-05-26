@@ -31,7 +31,7 @@
         <!-- کارت‌های آماری اقامتگاه‌ها (از دیتابیس) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div
-                class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300 border-r-4 border-blue-500">
+                class="bg-white rounded-xl shadow-md p-5  border-r-4 border-blue-500">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-gray-500 text-sm">کل اقامتگاه‌ها</p>
@@ -44,7 +44,7 @@
             </div>
 
             <div
-                class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300 border-r-4 border-green-500">
+                class="bg-white rounded-xl shadow-md p-5  border-r-4 border-green-500">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-gray-500 text-sm">فعال</p>
@@ -64,7 +64,7 @@
             </div>
 
             <div
-                class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300 border-r-4 border-yellow-500">
+                class="bg-white rounded-xl shadow-md p-5  border-r-4 border-yellow-500">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-gray-500 text-sm">در انتظار تایید</p>
@@ -81,7 +81,7 @@
             </div>
 
             <div
-                class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300 border-r-4 border-gray-500">
+                class="bg-white rounded-xl shadow-md p-5  border-r-4 border-gray-500">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-gray-500 text-sm">غیرفعال/مسدود</p>
@@ -322,26 +322,7 @@
 
         </div>
 
-        <!-- بخش دسترسی سریع -->
-        <div class="mt-8">
-            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6">
-                <h3 class="font-bold text-gray-800 text-lg mb-4">عملیات سریع اقامتگاه‌ها</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <a href="{{ route('admin.accommodation.add') }}"
-                        class="bg-white rounded-lg p-3 text-center hover:shadow-md transition-all group hover:translate-y-[-2px]">
-                        <i class="fas fa-plus-circle text-indigo-600 text-2xl mb-2 block"></i>
-                        <span class="text-sm text-gray-700">اقامتگاه جدید</span>
-                    </a>
-
-                    
-                    <a href=""
-                        class="bg-white rounded-lg p-3 text-center hover:shadow-md transition-all group hover:translate-y-[-2px]">
-                        <i class="fas fa-download text-indigo-600 text-2xl mb-2 block"></i>
-                        <span class="text-sm text-gray-700">خروجی Excel</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+       
     </div>
 @endsection
 

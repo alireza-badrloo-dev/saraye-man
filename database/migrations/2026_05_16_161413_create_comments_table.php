@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('accommodation_id')->constrained()->onDelete('cascade');
-            $table->text('comment');
             $table->integer('rating')->default(0);
             $table->text('positive_points')->nullable();
             $table->text('negative_points')->nullable();

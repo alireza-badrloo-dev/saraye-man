@@ -13,10 +13,12 @@ class detailAccommodationController extends Controller
     {
         $data = Accommodation::with(['comments.room', 'comments.user'])->findOrFail($id);
         // $accommodation = Accommodation::with('rooms')->findOrFail($id);
-
-        return view('user.detailAccommodation', compact('data'));
+        $averageRating = Comment::where('accommodation_id', $data->id)
+            ->where('status', 'approved')
+            ->avg('rating');
+        return view('user.detailAccommodation', compact('data','averageRating'));
     }
-     public function storeComment(Request $request, $id)
+    public function storeComment(Request $request, $id)
     {
         try {
             // اعتبارسنجی
@@ -30,16 +32,16 @@ class detailAccommodationController extends Controller
                 'room_id.required' => 'لطفاً اتاق خود را انتخاب کنید.',
 
             ]);
-            
+
             // بررسی اینکه کاربر قبلاً نظر نداده
             $existingComment = Comment::where('user_id', Auth::id())
                 ->where('accommodation_id', $id)
                 ->first();
-            
+
             if ($existingComment) {
                 return back()->with('error', 'شما قبلاً برای این اقامتگاه نظر ثبت کرده‌اید.');
             }
-            
+
             // ایجاد نظر جدید
             $comment = new Comment();
             $comment->user_id = Auth::id();
@@ -50,9 +52,8 @@ class detailAccommodationController extends Controller
             $comment->negative_points = $request->negative_points;
             $comment->status = 'pending';
             $comment->save();
-            
+
             return redirect()->back()->with('success', 'نظر شما با موفقیت ثبت شد. پس از تایید مدیریت نمایش داده می‌شود.');
-            
         } catch (\Exception $e) {
             return back()->with('error', 'خطا در ثبت نظر: ' . $e->getMessage());
         }

@@ -30,7 +30,7 @@ class Reservation extends Model
         'check_out' => 'date',
     ];
 
-    use Payable; // اضافه کردن این خط
+    
 
     public function getAmount()
     {
