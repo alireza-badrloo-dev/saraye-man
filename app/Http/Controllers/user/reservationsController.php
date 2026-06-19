@@ -5,6 +5,7 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\Companion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Morilog\Jalali\Jalalian;
@@ -15,7 +16,7 @@ class reservationsController extends Controller
     public function index()
     {
         $reservations = Reservation::where('user_id', Auth::id())
-            ->with(['accommodation', 'room'])
+            ->with(['accommodation', 'room', 'companions'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -34,12 +35,8 @@ class reservationsController extends Controller
             // اعتبارسنجی
             $request->validate([
                 'room_id' => 'required|exists:rooms,id',
-                'check_in_year' => 'required|numeric',
-                'check_in_month' => 'required|numeric',
-                'check_in_day' => 'required|numeric',
-                'check_out_year' => 'required|numeric',
-                'check_out_month' => 'required|numeric',
-                'check_out_day' => 'required|numeric',
+                'check_in' => 'required|string',
+                'check_out' => 'required|string',
                 'guests' => 'required|integer|min:1',
                 'full_name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
@@ -47,26 +44,27 @@ class reservationsController extends Controller
                 'special_request' => 'nullable|string',
             ]);
 
-            // ساخت تاریخ شمسی
-            $checkInJalali = sprintf('%04d/%02d/%02d', $request->check_in_year, $request->check_in_month, $request->check_in_day);
-            $checkOutJalali = sprintf('%04d/%02d/%02d', $request->check_out_year, $request->check_out_month, $request->check_out_day);
-
-            // تبدیل به میلادی
-            $checkInGregorian = Jalalian::fromFormat('Y/m/d', $checkInJalali)->toCarbon();
-            $checkOutGregorian = Jalalian::fromFormat('Y/m/d', $checkOutJalali)->toCarbon();
+            // تبدیل تاریخ شمسی به میلادی
+            $checkInGregorian = Jalalian::fromFormat('Y/m/d', $request->check_in)->toCarbon();
+            $checkOutGregorian = Jalalian::fromFormat('Y/m/d', $request->check_out)->toCarbon();
 
             // محاسبه تعداد شب
             $nights = $checkInGregorian->diffInDays($checkOutGregorian);
             $room = Room::findOrFail($request->room_id);
-            $totalPrice = $room->price * $nights;
-
-            // ========== چک کردن رزرو تکراری با scope ==========
+            
+            // بررسی ظرفیت اتاق
+            if ($request->guests > $room->capacity) {
+                return back()->with('error', 'ظرفیت اتاق ' . $room->capacity . ' نفر است. شما ' . $request->guests . ' نفر را وارد کرده‌اید.')->withInput();
+            }
+            
+            // بررسی رزرو تکراری
             $existingReservation = Reservation::checkOverlap($room->id, $checkInGregorian, $checkOutGregorian)->first();
-
+            
             if ($existingReservation) {
                 return back()->with('error', 'این اتاق در تاریخ‌های انتخاب شده قبلاً رزرو شده است. لطفاً تاریخ دیگری را انتخاب کنید.')->withInput();
             }
-            // =================================================
+
+            $totalPrice = $room->price * $nights;
 
             // ایجاد رزرو
             $reservation = new Reservation();
@@ -84,6 +82,20 @@ class reservationsController extends Controller
             $reservation->notes = $request->special_request;
             $reservation->save();
 
+            // ذخیره همراهان در جدول companions (جدول جدا)
+            if ($request->has('companions')) {
+                foreach ($request->companions as $companionData) {
+                    if (!empty($companionData['full_name'])) {
+                        Companion::create([
+                            'reservation_id' => $reservation->id,
+                            'full_name' => $companionData['full_name'],
+                            'national_code' => $companionData['national_code'] ?? null,
+                            'phone' => $companionData['phone'] ?? null,
+                        ]);
+                    }
+                }
+            }
+
             session([
                 'reservation_id' => $reservation->id,
                 'full_name' => $request->full_name,
@@ -91,10 +103,10 @@ class reservationsController extends Controller
                 'email' => $request->email,
             ]);
 
-            return redirect()->route('payment.index', $reservation->id);
+            return redirect()->route('payment.index', $reservation->id)->with('success', 'اطلاعات رزرو با موفقیت ثبت شد. در حال انتقال به صفحه پرداخت...');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'خطا: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'خطا در ثبت رزرو: ' . $e->getMessage())->withInput();
         }
     }
 }

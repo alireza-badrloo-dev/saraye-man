@@ -13,7 +13,7 @@ class reserveController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Reservation::with(['user', 'accommodation', 'room']);
+        $query = Reservation::with(['user', 'accommodation', 'room', 'companions']);
         
         // فیلتر بر اساس وضعیت
         if ($request->filled('status')) {
@@ -68,7 +68,7 @@ class reserveController extends Controller
     
     public function show($id)
     {
-        $reservation = Reservation::with(['user', 'accommodation', 'room'])->findOrFail($id);
+        $reservation = Reservation::with(['user', 'accommodation', 'room', 'companions'])->findOrFail($id);
         return view('admin.showReserve', compact('reservation'));
     }
     

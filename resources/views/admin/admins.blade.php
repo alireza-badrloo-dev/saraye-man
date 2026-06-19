@@ -1,10 +1,19 @@
 @extends('admin.Layout.master')
 @section('Content')
 <div class="p-4 md:p-6">
-    <!-- عنوان صفحه -->
-    <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">مدیریت ادمین‌ها</h1>
-        <p class="text-gray-500 mt-1">لیست تمام مدیران سیستم</p>
+     <!-- عنوان صفحه و دکمه افزودن ادمین -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">مدیریت ادمین‌ها</h1>
+            <p class="text-gray-500 mt-1">لیست تمام مدیران سیستم</p>
+        </div>
+        
+        <!-- دکمه افزودن ادمین جدید -->
+        <a href="{{ route('admin.admins.create') }}" 
+           class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg">
+            <i class="fas fa-plus"></i>
+            <span>افزودن ادمین جدید</span>
+        </a>
     </div>
 
     <!-- کارت‌های آماری -->
@@ -190,9 +199,14 @@
                         <td colspan="8" class="px-6 py-12 text-center text-gray-500">
                             <i class="fas fa-user-shield text-4xl mb-2 block"></i>
                             <p>هیچ ادمینی یافت نشد.</p>
+                            @php
+                                $admin = Auth::guard('admin')->user();
+                            @endphp
+                            @if($admin && $admin->role == 'super_admin')
                             <a href="{{ route('admin.admins.create') }}" class="mt-2 inline-block text-indigo-600 hover:text-indigo-800">
                                 <i class="fas fa-plus ml-1"></i> افزودن ادمین جدید
                             </a>
+                            @endif
                         </td>
                     </tr>
                     @endforelse

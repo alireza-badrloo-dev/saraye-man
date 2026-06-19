@@ -26,29 +26,7 @@
                 <h1 class="text-2xl  text-gray-800 mb-4">رزرو اقامتگاه و اقامتگاه های کشور</h1>
                 <p>اولین ارائه دهنده اولین ارائه دهنده رسمی خدمات تخصصی رزرواسیون اقامتگاه و اقامتگاه های کشور</p>
             </div>
-            <div
-                class="w-full mb-12  p-4 grid  md:grid-cols-2 xl:grid-cols-4  gap-4 border border-gray-300 rounded-md  bg-white items-center">
-                <div class=" ">
-                    <label class="text-xs  text-gray-600" htmlFor="نام شهر یا اقامتگاه">نام شهر یا
-                        اقامتگاه</label>
-                    <input class="border border-gray-300 rounded-md p-2 w-full " type="text" />
-
-                </div>
-                <div class="">
-                    <label class="text-xs  text-gray-600" htmlFor="از تاریخ">از تاریخ</label>
-                    <input data-jdp class="border border-gray-300 rounded-md p-2 w-full" type="text">
-
-                </div>
-                <div>
-                    <label class="text-xs  text-gray-600" htmlFor="تا مدت">تا مدت</label>
-                    <input class="border border-gray-300 rounded-md p-2 w-full" type="text" />
-
-                </div>
-                <div>
-                    <button class="bg-orange-500 hover:bg-orange-600 mt-6 py-2.5 px-3 text-white rounded-md w-full "><a
-                            href="/search">جستجو</a></button>
-                </div>
-            </div>
+            <x-search-form />
 
 
             <h1 class="text-xl  text-gray-800 mb-4">مقاصد محبوب</h1>
@@ -94,59 +72,61 @@
                         @endphp
 
                         <div class="swiper-slide">
-                            <a href="{{ route('details', ['id' => $item->id]) }}" class="space-y-3">
+                            <div class="bg-white rounded-xl  overflow-hidden  transition group">
+                                <a href="{{ route('details', $item->id) }}">
+                                    @php
+                                        $images = is_string($item->images)
+                                            ? json_decode($item->images, true)
+                                            : $item->images ?? [];
+                                        $firstImage = $images[0] ?? null;
+                                        $rating = $item->rating ?? 0;
+                                        $full = floor($rating);
+                                        $half = $rating - $full >= 0.5 ? 1 : 0;
+                                        $empty = 5 - $full - $half;
+                                        $minPrice = $item->rooms->min('price') ?? 0;
+                                    @endphp
 
+                                    @if ($firstImage)
+                                        <img class="w-full h-48 object-cover group-hover:scale-105 transition duration-300"
+                                            src="{{ asset('storage/uplouds/' . $firstImage) }}" alt="{{ $item->title }}">
+                                    @else
+                                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                                        </div>
+                                    @endif
 
-
-
-                                @if ($firstImage)
-                                    <img class="w-full rounded-md" src="{{ asset('storage/uplouds/' . $firstImage) }}"
-                                        alt="{{ $item->title }}">
-                                @endif
-
-
-
-                                <h2 class="text-md text-gray-800">{{ $item->title }}</h2>
-
-                                <div
-                                    class="text-xs text-justify text-gray-600 w-48 2xl:64 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                    {{ $item->address }}
-                                </div>
-
-                                <div class="flex items-center justify-between">
-
-
-                                    <p class="text-gray-400 text-xs">
-                                        از <span class="text-gray-600 text-sm">{{ number_format($item->rooms_min_price) }}
-                                            تومان</span>/ 1شب
-                                    </p>
-
-
-                                    <div class="flex items-center text-gray-400">
-                                        @php
-                                            $rating = $item->rating;
-                                            $full = floor($rating);
-                                            $half = $rating - $full >= 0.5 ? 1 : 0;
-                                            $empty = 5 - $full - $half;
-                                        @endphp
-
-                                        <div class="flex items-center text-gray-400" dir="ltr">
-                                            @for ($i = 0; $i < $full; $i++)
-                                                <span class="text-yellow-400">★</span>
-                                            @endfor
-
-                                            @if ($half)
-                                                <span class="text-yellow-400">☆</span>
-                                            @endif
-
-                                            @for ($i = 0; $i < $empty; $i++)
-                                                <span>★</span>
-                                            @endfor
+                                    <div class="py-2">
+                                        <h2 class="text-md font-bold text-gray-800 mb-1 line-clamp-1">
+                                            {{ $item->title }}</h2>
+                                        <div
+                                            class="text-xs text-justify text-gray-600 w-48 2xl:64 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                            {{ $item->address }}
                                         </div>
 
+                                        <div class="flex items-center justify-between mt-2">
+                                            <p class="text-gray-400 text-xs">
+                                                از <span
+                                                    class="text-gray-600 text-sm font-bold">{{ number_format($minPrice) }}</span>
+                                                تومان
+                                                <span class="text-xs">/ شب</span>
+                                            </p>
+                                            <div class="flex items-center gap-1" dir="ltr">
+                                                @for ($i = 0; $i < $full; $i++)
+                                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                @endfor
+                                                @if ($half)
+                                                    <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                                                @endif
+                                                @for ($i = 0; $i < $empty; $i++)
+                                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                                @endfor
+                                                <span
+                                                    class="text-xs font-bold text-gray-700 mr-1">{{ number_format($rating, 1) }}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
                     @endforeach
 

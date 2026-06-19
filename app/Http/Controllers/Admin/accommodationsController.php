@@ -154,13 +154,13 @@ class AccommodationsController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(int$id)
     {
         $accommodation = Accommodation::with('city')->findOrFail($id);
         return view('admin.showAccommodation', compact('accommodation'));
     }
 
-    public function edit($id)
+    public function edit(int$id)
     {
         $accommodation = Accommodation::findOrFail($id);
         $cities = City::orderBy('name', 'asc')->get();
@@ -181,7 +181,7 @@ class AccommodationsController extends Controller
      */
     // در متد update کنترلر AccommodationController
 
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
         try {
             $accommodation = Accommodation::findOrFail($id);
@@ -300,7 +300,7 @@ class AccommodationsController extends Controller
     /**
      * حذف اقامتگاه
      */
-    public function destroy($id)
+    public function destroy(int$id)
     {
         try {
             $accommodation = Accommodation::findOrFail($id);

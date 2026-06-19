@@ -1,240 +1,333 @@
 @extends('user.Layouts.master')
 @section('Mycontent')
-    <div>
-        <picture class="city-banner">
-            <img class="w-full object-cover" src="/image/home.jpg" alt="home" />
-        </picture>
-        <div class=" mx-1  md:mx-20 xl:mx-40 relative -mt-20">
-            <h1 class="text-2xl  text-gray-800 mb-4"> اقامتگاه های {{ $city->name }}</h1>
-            <div
-                class="w-full mb-12  p-4 grid  md:grid-cols-2 xl:grid-cols-4  gap-4 border border-gray-300 rounded-md  bg-white items-center">
-                <div class=" ">
-                    <label class="text-xs  text-gray-600" htmlFor="نام شهر یا اقامتگاه">نام شهر یا
-                        اقامتگاه</label>
-                    <input class="border border-gray-300 rounded-md p-2 w-full " type="text" />
+<div>
+    <picture class="city-banner">
+        <img class="w-full object-cover" src="/image/home.jpg" alt="home" />
+    </picture>
+    <div class="mx-1 md:mx-20 xl:mx-40 relative">
+        <h1 class="text-2xl text-gray-800 -mt-10 mb-10">اقامتگاه‌های {{ $city->name }}</h1>
 
+        <div class="grid grid-cols-12 gap-6 mb-12">
+            <!-- فیلترهای سمت راست -->
+            <div class="col-span-full order-2 lg:-order-1 lg:col-span-3">
+                <div class="border p-3 rounded-b-none rounded-md border-gray-300">
+                    <h1 class="text-md text-gray-600">فیلترهای اقامتگاه</h1>
                 </div>
 
-                <div class="">
-                    <label class="text-xs  text-gray-600" htmlFor="از تاریخ">از تاریخ</label>
-                    <input class="border border-gray-300 rounded-md p-2 w-full" type="text" />
+                <div class="border p-3 rounded-md rounded-t-none border-gray-300 border-t-0">
+                    <!-- جستجوی نام اقامتگاه -->
+                    <p class="text-gray-600 text-sm mb-3">نام اقامتگاه</p>
+                    <div class="relative flex items-center">
+                        <input type="text" name="filter_name" id="filter_name" value="{{ request('filter_name') }}"
+                            class="border border-gray-300 bg-gray-50 text-xs p-2 w-full rounded-md hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="جستجو">
+                        <i class="fas fa-search absolute left-2 text-gray-400 text-xs"></i>
+                    </div>
+                    <hr class="text-gray-300 my-3">
 
-                </div>
-                <div>
-                    <label class="text-xs  text-gray-600" htmlFor="تا مدت">تا مدت</label>
-                    <input class="border border-gray-300 rounded-md p-2 w-full" type="text" />
+                    <!-- محدوده قیمت -->
+                    <p class="text-gray-600 text-sm mb-3">محدوده قیمت (تومان)</p>
+                    <div class="flex justify-between gap-3">
+                        <div class="w-full">
+                            <label class="text-xs text-gray-500 block mb-1">حداقل قیمت</label>
+                            <input type="number" id="min-price" name="min_price" value="{{ request('min_price', 0) }}"
+                                class="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div class="w-full">
+                            <label class="text-xs text-gray-500 block mb-1">حداکثر قیمت</label>
+                            <input type="number" id="max-price" name="max_price"
+                                value="{{ request('max_price', $maxPriceInDb ?? 10000000) }}"
+                                class="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-2 focus:ring-orange-500">
+                        </div>
+                    </div>
+                    <hr class="text-gray-300 my-3">
 
-                </div>
-                <div>
-                    <button class="bg-orange-500 hover:bg-orange-600 mt-6 py-2.5 px-3 text-white rounded-md w-full "><a
-                            href="/search">جستجو</a></button>
+                    <!-- امکانات عمومی -->
+                    <p class="text-gray-600 text-sm mb-3">امکانات عمومی</p>
+                    <div class="flex flex-col space-y-3 items-start w-full max-h-40 overflow-y-auto">
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="wifi" id="facility_wifi"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('wifi', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_wifi" class="text-xs text-gray-500 font-medium">وای فای رایگان</label>
+                        </div>
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="parking" id="facility_parking"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('parking', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_parking" class="text-xs text-gray-500 font-medium">پارکینگ</label>
+                        </div>
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="restaurant" id="facility_restaurant"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('restaurant', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_restaurant" class="text-xs text-gray-500 font-medium">رستوران</label>
+                        </div>
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="pool" id="facility_pool"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('pool', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_pool" class="text-xs text-gray-500 font-medium">استخر</label>
+                        </div>
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="gym" id="facility_gym"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('gym', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_gym" class="text-xs text-gray-500 font-medium">باشگاه ورزشی</label>
+                        </div>
+                        <div class="flex">
+                            <input type="checkbox" name="facilities[]" value="spa" id="facility_spa"
+                                class="me-2 facility-checkbox"
+                                {{ in_array('spa', explode(',', request('facilities', ''))) ? 'checked' : '' }}>
+                            <label for="facility_spa" class="text-xs text-gray-500 font-medium">اسپا و سونا</label>
+                        </div>
+                    </div>
+                    <hr class="text-gray-300 my-3">
+
+                    <!-- امتیاز اقامتگاه -->
+                    <p class="text-gray-600 text-sm mb-3">امتیاز اقامتگاه</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="radio" name="rating" value="4.5" class="ml-2"
+                                    {{ request('rating') == '4.5' ? 'checked' : '' }}>
+                                <div class="flex items-center gap-0.5">
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <span class="text-sm text-gray-700 mr-1">عالی</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500">4.5 به بالا</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="radio" name="rating" value="4" class="ml-2"
+                                    {{ request('rating') == '4' ? 'checked' : '' }}>
+                                <div class="flex items-center gap-0.5">
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <span class="text-sm text-gray-700 mr-1">خیلی خوب</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500">4 تا 4.5</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="radio" name="rating" value="3.5" class="ml-2"
+                                    {{ request('rating') == '3.5' ? 'checked' : '' }}>
+                                <div class="flex items-center gap-0.5">
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <span class="text-sm text-gray-700 mr-1">خوب</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500">3.5 تا 4</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="radio" name="rating" value="3" class="ml-2"
+                                    {{ request('rating') == '3' ? 'checked' : '' }}>
+                                <div class="flex items-center gap-0.5">
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <span class="text-sm text-gray-700 mr-1">متوسط</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500">3 تا 3.5</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <input type="radio" name="rating" value="0" class="ml-2"
+                                    {{ request('rating') == '0' ? 'checked' : '' }}>
+                                <div class="flex items-center gap-0.5">
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                    <span class="text-sm text-gray-700 mr-1">ضعیف</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500">کمتر از 3</span>
+                        </label>
+                    </div>
+
+                    <button id="applyFilters"
+                        class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-md mt-4 transition">
+                        اعمال فیلترها
+                    </button>
                 </div>
             </div>
-            <div class="grid grid-cols-12 gap-6 mb-12 ">
 
-
-                <div class="col-span-full order-2 lg:-order-1 lg:col-span-3  ">
-                    <div class="border p-3 rounded-b-none rounded-md border-gray-300 ">
-                        <h1 class="text-md     text-gray-600">
-                            فیلترهای اقامتگاه
-                        </h1>
-                    </div>
-
-                    <div class="border p-3 rounded-md rounded-t-none  border-gray-300 border-t-0">
-                        <p class="text-gray-600  text-sm  mb-3">نام اقامتگاه</p>
-                        <div class="relative flex items-center  ">
-                            <input type="text"
-                                class=" border border-s-gray-200 bg-gray-100 text-xs  p-2 w-full rounded-md  hover:bg-white hover:border-gray-200 selection:bg-white focus:bg-white"
-                                placeholder="جستجو">
-                            <img src="/icons/svgexport-2.svg" alt="" class="absolute left-2">
-                        </div>
-                        <hr class="text-gray-300 my-3">
-
-                        <p class="text-gray-600  text-sm  mb-3">محدوده قیمت</p>
-
-
-                        <!-- اسلایدر اینجا قرار می‌گیرد -->
-
-
-
-                        <!-- 1. المنت اصلی اسلایدر -->
-                        <div id="price-slider" class="px-2"></div>
-
-                        <!-- نمایش مقادیر -->
-                        <div class="values flex justify-between mt-4 text-xs text-gray-500  ">
-                            <span>حداکثر قیمت: <span id="val-max">1000000</span></span>
-                            <span>حداقل قیمت: <span id="val-min">0</span></span>
-                        </div>
-
-                        <hr class="text-gray-300 my-3">
-
-                        <p class="text-gray-600  text-sm  mb-3">نوع اقامتگاه</p>
-                        <div class="flex flex-col space-y-3 items-start w-full">
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">مجتمع اقامتی</label>
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">اقامتگاه بومگردی</label>
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">خانه مسافر</label>
-                            </div>
-                        </div>
-
-                        <hr class="text-gray-300 my-3">
-
-                        <p class="text-gray-600  text-sm  mb-3">تعداد تخت</p>
-                        <div class="flex flex-col space-y-3 items-start w-full">
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">1 تخته</label>
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">2 تخته</label>
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">3 تخته</label>
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">4 تخته</label>
-
-                            </div>
-                            <div class="flex">
-                                <input type="checkbox" class="me-2">
-                                <label for="" class="text-xs text-gray-500 font-medium ">5 تخته و بیشتر</label>
-                            </div>
-                        </div>
-
-                        <hr class="text-gray-300 my-3">
-
-                        <p class="text-gray-600  text-sm  mb-3">امتیاز کاربران</p>
-                        <div class="flex flex-col space-y-3 items-start w-full">
-                            <div class="flex justify-between items-center w-full">
-                                <div>
-                                    <input type="checkbox" class="me-2">
-                                    <label for="" class="text-xs text-gray-500 font-medium ">عالی</label>
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium ">8 به بالا</p>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <div>
-                                    <input type="checkbox" class="me-2">
-                                    <label for="" class="text-xs text-gray-500 font-medium ">خوب</label>
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium ">6 تا 8</p>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <div>
-                                    <input type="checkbox" class="me-2">
-                                    <label for="" class="text-xs text-gray-500 font-medium ">متوسط</label>
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium ">4 تا 6</p>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <div>
-                                    <input type="checkbox" class="me-2">
-                                    <label for="" class="text-xs text-gray-500 font-medium ">ضعیف</label>
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium ">4 به پایین</p>
-                            </div>
-
-                        </div>
-
-                    </div>
+            <!-- لیست اقامتگاه‌ها -->
+            <div class="col-span-full lg:col-span-9">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                    <h1 class="text-xl font-bold text-gray-800">لیست اقامتگاه‌های {{ $city->name }}</h1>
+                    <p class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                        <i class="fas fa-building ml-1"></i> {{ $accommodations->total() }} اقامتگاه
+                    </p>
                 </div>
 
+                <!-- مرتب‌سازی -->
+                <div class="flex flex-wrap items-center gap-2 mb-6">
+                    <span class="text-sm text-gray-600 ml-2">مرتب سازی:</span>
+                    <a href="{{ route('city', $city->id) }}?sort=default"
+                        class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ !request('sort') || request('sort') == 'default' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        پیشفرض
+                    </a>
+                    <a href="{{ route('city', $city->id) }}?sort=price_asc"
+                        class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'price_asc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        کمترین قیمت
+                    </a>
+                    <a href="{{ route('city', $city->id) }}?sort=price_desc"
+                        class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'price_desc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        بیشترین قیمت
+                    </a>
+                    <a href="{{ route('city', $city->id) }}?sort=rating_desc"
+                        class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'rating_desc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        بالاترین امتیاز
+                    </a>
+                </div>
 
-                <div class=" col-span-full lg:col-span-9 ">
+                <!-- کارت‌های اقامتگاه -->
+                @if ($accommodations->count() > 0)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        @foreach ($accommodations as $item)
+                            <div class="bg-white rounded-xl overflow-hidden transition group">
+                                <a href="{{ route('details', $item->id) }}">
+                                    @php
+                                        $images = is_string($item->images) ? json_decode($item->images, true) : ($item->images ?? []);
+                                        $firstImage = $images[0] ?? null;
+                                        $rating = $item->rating ?? 0;
+                                        $full = floor($rating);
+                                        $half = ($rating - $full) >= 0.5 ? 1 : 0;
+                                        $empty = 5 - $full - $half;
+                                        $minPrice = $item->rooms->min('price') ?? 0;
+                                    @endphp
 
-                    <div class="grid grid-cols-3 w-full gap-5 ">
-                        <div class=" col-span-9 ">
-                            <h1 class="text-xl  text-gray-800 mb-4">لیست اقامتگاه های {{ $city->name }}</h1>
-                            <div class="flex justify-between sm:justify-start   sm:space-x-4 items-center w-full mb-4">
-                                <p class=" hidden sm:flex text-sm  text-gray-800 me-3">نمایش بر اساس:</p>
-                                <a class="text-sm font-normal  text-gray-800 p-1  sm:py-1 sm:px-2 rounded-md hover:bg-orange-500 hover:text-white  focus:bg-orange-500 focus:text-white"
-                                    href="#">پیشفرض</a>
-
-
-                                <a class="text-sm font-normal  text-gray-800 p-1 sm:py-1 sm:px-2 rounded-md hover:bg-orange-500 hover:text-white  focus:bg-orange-500 focus:text-white"
-                                    href="#">کمترین
-                                    قیمت</a>
-                                <a class="text-sm font-normal  text-gray-800 p-1 sm:py-1 sm:px-2 rounded-md hover:bg-orange-500 hover:text-white  focus:bg-orange-500 focus:text-white"
-                                    href="#">بیشترین
-                                    قیمت</a>
-                                <a class="text-sm font-normal  text-gray-800 p-1 sm:py-1 sm:px-2 rounded-md hover:bg-orange-500 hover:text-white  focus:bg-orange-500 focus:text-white"
-                                    href="#">بالاترین امتیاز</a>
-                            </div>
-
-                            @if (count($city->accommodations) == 0)
-                                <p class="w-full p-2  bg-red-100 border border-red-500 rounded-md text-center text-red-500">
-                                    اقامتگاهی برای این شهر وجود ندارد</p>
-                            @else
-                                <div class="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-5 ">
-                                    @foreach ($city->accommodations as $item)
-                                        @php
-                                            $images = $item->images ?? []; // آرایه واقعی
-                                            $firstImage = $images[0] ?? null; // عکس اول
-                                        @endphp
-                                        <div>
-                                            <a href="{{ route('details', ['id' => $item->id]) }}" class="space-y-3">
-                                                <img class="w-full rounded-md" src="{{ asset('storage/uplouds/' . $firstImage) }}" alt="{{ $item->title }}">
-                                                <h2 class="text-md  text-gray-800">{{ $item->title }}
-                                                </h2>
-                                                <div
-                                                    class="text-xs  text-justify text-gray-600 w-48 2xl:64  whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                                    {{ $item->address }}
-                                                </div>
-                                                <div class="flex items-center justify-between">
-                                                    <p class="text-gray-400 text-xs ">از <span
-                                                            class="text-gray-600 text-sm">
-                                                            {{ number_format($minPrice) }}
-                                                            تومان </span>/ 1شب</p>
-                                                    @php
-                                                        $rating = $item->rating ; // یا هر نام متغیر دیگه
-                                                        $full = floor($rating);
-                                                        $half = $rating - $full >= 0.5 ? 1 : 0;
-                                                        $empty = 5 - $full - $half;
-                                                    @endphp
-
-                                                    <div class="flex items-center text-gray-400" dir="ltr">
-                                                        @for ($i = 0; $i < $full; $i++)
-                                                            <span class="text-yellow-400">★</span>
-                                                        @endfor
-
-                                                        @if ($half)
-                                                            <span class="text-yellow-400">☆</span>
-                                                        @endif
-
-                                                        @for ($i = 0; $i < $empty; $i++)
-                                                            <span>★</span>
-                                                        @endfor
-                                                    </div>
-
-                                                </div>
-                                            </a>
+                                    @if ($firstImage)
+                                        <img class="w-full h-48 object-cover group-hover:scale-105 transition duration-300"
+                                            src="{{ asset('storage/uplouds/' . $firstImage) }}"
+                                            alt="{{ $item->title }}">
+                                    @else
+                                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-image text-gray-400 text-4xl"></i>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                    @endif
 
+                                    <div class="p-4">
+                                        <h2 class="text-md font-bold text-gray-800 mb-1 line-clamp-1">
+                                            {{ $item->title }}</h2>
+                                        <div class="text-xs text-justify text-gray-600 line-clamp-1">
+                                            {{ $item->address }}
+                                        </div>
 
-
-
-
-                        </div>
-
-
+                                        <div class="flex items-center justify-between mt-2">
+                                            <p class="text-gray-400 text-xs">
+                                                از <span class="text-gray-600 text-sm font-bold">{{ number_format($minPrice) }}</span>
+                                                تومان
+                                                <span class="text-xs">/ شب</span>
+                                            </p>
+                                            <div class="flex items-center gap-1" dir="ltr">
+                                                @for ($i = 0; $i < $full; $i++)
+                                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                @endfor
+                                                @if ($half)
+                                                    <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                                                @endif
+                                                @for ($i = 0; $i < $empty; $i++)
+                                                    <i class="far fa-star text-gray-300 text-xs"></i>
+                                                @endfor
+                                                <span class="text-xs font-bold text-gray-700 mr-1">{{ number_format($rating, 1) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
 
-                </div>
-
+                    <!-- صفحه‌بندی -->
+                    <div class="mt-8">
+                        {{ $accommodations->links() }}
+                    </div>
+                @else
+                    <div class="text-center py-16 bg-white rounded-xl">
+                        <i class="fas fa-building text-gray-300 text-6xl mb-4"></i>
+                        <p class="text-gray-500 text-lg">هیچ اقامتگاهی با این مشخصات یافت نشد.</p>
+                        <a href="{{ route('home') }}"
+                            class="inline-block mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg transition">
+                            بازگشت به صفحه اصلی
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const applyBtn = document.getElementById('applyFilters');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                let url = new URL(window.location.href);
+
+                const minPrice = document.getElementById('min-price')?.value;
+                const maxPrice = document.getElementById('max-price')?.value;
+
+                if (minPrice !== undefined && minPrice !== '') {
+                    url.searchParams.set('min_price', minPrice);
+                } else {
+                    url.searchParams.delete('min_price');
+                }
+                if (maxPrice !== undefined && maxPrice !== '') {
+                    url.searchParams.set('max_price', maxPrice);
+                } else {
+                    url.searchParams.delete('max_price');
+                }
+
+                const filterName = document.getElementById('filter_name')?.value;
+                if (filterName && filterName.trim() !== '') {
+                    url.searchParams.set('filter_name', filterName.trim());
+                } else {
+                    url.searchParams.delete('filter_name');
+                }
+
+                const facilities = [];
+                document.querySelectorAll('input[name="facilities[]"]:checked').forEach(cb => {
+                    facilities.push(cb.value);
+                });
+                if (facilities.length > 0) {
+                    url.searchParams.set('facilities', facilities.join(','));
+                } else {
+                    url.searchParams.delete('facilities');
+                }
+
+                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+                if (rating) {
+                    url.searchParams.set('rating', rating);
+                } else {
+                    url.searchParams.delete('rating');
+                }
+
+                window.location.href = url.toString();
+            });
+        }
+    });
+</script>
 @endsection

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('mobile')->nullable();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'admin', 'moderator'])->default('admin');
+            $table->enum('role', ['super_admin', 'admin'])->default('admin');
             $table->json('permissions')->nullable();
             $table->string('profile_image')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();

@@ -1,18 +1,24 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\accommodationController;
 use App\Http\Controllers\Admin\accommodationsController;
+use App\Http\Controllers\admin\AdminContactController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\CityController as AdminCityController;
 use App\Http\Controllers\Admin\commentsController;
+
 use App\Http\Controllers\Admin\dasboardController;
 use App\Http\Controllers\Admin\reportsController;
 use App\Http\Controllers\Admin\reserveController;
 use App\Http\Controllers\Admin\usersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cityController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\detailAccommodationController;
 use App\Http\Controllers\homeController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\user\AuthController;
 use App\Http\Controllers\user\dashboardController;
 use App\Http\Controllers\User\FavouriteController;
@@ -23,8 +29,14 @@ use App\Http\Controllers\user\reservationsController;
 Route::get('/', [homeController::class, 'index'])->name("home");
 Route::get('/detailaccmmodation/{id}', [detailAccommodationController::class, 'index'])->name("details");
 Route::post('/detailaccmmodation/{id}/comment/store', [detailAccommodationController::class, 'storeComment'])->name('comment.store');
-
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/city/{id}', [cityController::class, 'index'])->name('city');
+
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/accommodations', [accommodationController::class, 'index'])->name("accommodations");
 Route::get('/register', [AuthController::class, 'registerShow'])->name('user.register.show');
@@ -91,15 +103,30 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::delete('/users/{id}', [usersController::class, 'destroy'])->name('users.destroy');
     Route::patch('/users/{id}/status', [usersController::class, 'toggleStatus'])->name('users.toggle-status');
 
+    Route::get('/cities', [AdminCityController::class, 'index'])->name('cities.index');
+    Route::get('/cities/create', [AdminCityController::class, 'create'])->name('cities.create');
+    Route::post('/cities', [AdminCityController::class, 'store'])->name('cities.store');
+    Route::get('/cities/{id}/edit', [AdminCityController::class, 'edit'])->name('cities.edit');
+    Route::put('/cities/{id}', [AdminCityController::class, 'update'])->name('cities.update');
+    Route::delete('/cities/{id}', [AdminCityController::class, 'destroy'])->name('cities.destroy');
 
-    Route::get('/admins', [AdminController::class, 'index'])->name('admins');
-    Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
-    Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
-    Route::get('/admins/{id}', [AdminController::class, 'show'])->name('admins.show');
-    Route::get('/admins/{id}/edit', [AdminController::class, 'edit'])->name('admins.edit');
-    Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
-    Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
-    Route::patch('/admins/{id}/status', [AdminController::class, 'toggleStatus'])->name('admins.toggle-status');
+
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/admins', [AdminController::class, 'index'])->name('admins');
+        Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
+        Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+        Route::get('/admins/{id}', [AdminController::class, 'show'])->name('admins.show');
+        Route::get('/admins/{id}/edit', [AdminController::class, 'edit'])->name('admins.edit');
+        Route::put('/admins/{id}', [AdminController::class, 'update'])->name('admins.update');
+        Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+        Route::patch('/admins/{id}/status', [AdminController::class, 'toggleStatus'])->name('admins.toggle-status');
+
+
+        Route::get('/contacts', [AdminContactController::class, 'index'])->name('contacts.index');
+        Route::get('/contacts/{id}', [AdminContactController::class, 'show'])->name('contacts.show');
+        Route::delete('/contacts/{id}', [AdminContactController::class, 'destroy'])->name('contacts.destroy');
+        Route::put('/contacts/{id}/toggle-read', [AdminContactController::class, 'toggleRead'])->name('contacts.toggle-read');
+    });
 });
 
 Route::get('/test-export', function () {

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use PhpMonsters\Larapay\Payable;
 
 class Reservation extends Model
 {
@@ -23,23 +22,13 @@ class Reservation extends Model
         'authority',
         'ref_id',
         'transaction_id',
+
     ];
 
     protected $casts = [
         'check_in' => 'date',
         'check_out' => 'date',
     ];
-
-    
-
-    public function getAmount()
-    {
-        // محاسبه مبلغ تراکنش بر اساس رزرو (در اینجا return $this->total_price * 10)
-        return intval($this->total_price) * 10;
-    }
-
-
-    // ========== متدهای کمکی ==========
 
     public static function generateTrackingCode()
     {
@@ -63,6 +52,16 @@ class Reservation extends Model
         return $this->belongsTo(Room::class);
     }
 
+
+
+    
+
+    public function companions()
+    {
+        return $this->hasMany(Companion::class);
+    }
+    // ========== اسکوپ‌ها ==========
+
     public function scopeCheckOverlap($query, $roomId, $checkIn, $checkOut)
     {
         return $query->where('room_id', $roomId)
@@ -75,5 +74,44 @@ class Reservation extends Model
                             ->where('check_out', '>=', $checkOut);
                     });
             });
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'confirmed')
+            ->where('check_in', '<=', now())
+            ->where('check_out', '>=', now());
+    }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('status', 'confirmed')
+            ->where('check_in', '>', now());
+    }
+
+    // ========== متدهای وضعیت ==========
+
+    public function getStatusTextAttribute()
+    {
+        $statuses = [
+            'pending' => 'در انتظار پرداخت',
+            'confirmed' => 'تایید شده',
+            'cancelled' => 'لغو شده',
+            'completed' => 'تکمیل شده',
+        ];
+
+        return $statuses[$this->status] ?? 'نامشخص';
+    }
+
+    public function getStatusClassAttribute()
+    {
+        $classes = [
+            'pending' => 'bg-yellow-100 text-yellow-700',
+            'confirmed' => 'bg-green-100 text-green-700',
+            'cancelled' => 'bg-red-100 text-red-700',
+            'completed' => 'bg-blue-100 text-blue-700',
+        ];
+
+        return $classes[$this->status] ?? 'bg-gray-100 text-gray-700';
     }
 }

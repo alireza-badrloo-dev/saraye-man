@@ -18,7 +18,7 @@
         </button>
         <div class="bg-indigo-700 overflow-y-auto flex flex-col flex-grow text-white" id="sidebar-content-layout">
             <div class="px-4 my-6 flex items-center">
-                <img class="w-16" src="image/Artboard 2.svg" alt="">
+                <img class="w-16" src="/image/Artboard 2.svg" alt="">
                 <h1 class="text-white text-xl">سرای من</h1>
             </div>
             <nav class="flex flex-col h-full justify-between px-4 space-y-1">
@@ -50,7 +50,14 @@
                         <span class="text-sm font-medium">اقامتگاه ها</span>
                     </a>
 
-
+                    <a href="{{ route('admin.cities.index') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/cities**')
+           ? 'bg-indigo-600 text-white shadow-md'
+           : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
+                        <i class="fa fa-city w-5 text-lg"></i>
+                        <span class="text-sm font-medium">شهر ها</span>
+                    </a>
 
                     <a href="{{ route('admin.users') }}"
                         class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
@@ -61,14 +68,20 @@
                         <span class="text-sm font-medium">کاربران</span>
                     </a>
 
-                    <a href="{{ route('admin.admins') }}"
-                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
-       {{ request()->is('reports')
-           ? 'bg-indigo-600 text-white shadow-md'
-           : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                        <i class="fas fa-user-shield w-5 text-lg"></i>
-                        <span class="text-sm font-medium">ادمین ها</span>
-                    </a>
+                    @php
+                        $admin = Auth::guard('admin')->user();
+                    @endphp
+
+                    @if ($admin && $admin->role == 'super_admin')
+                        <a href="{{ route('admin.admins') }}"
+                            class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+    {{ request()->is('admin/admins*')
+        ? 'bg-indigo-600 text-white shadow-md'
+        : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
+                            <i class="fas fa-user-shield w-5 text-lg"></i>
+                            <span class="text-sm font-medium">ادمین‌ها</span>
+                        </a>
+                    @endif
 
                     <a href="{{ route('admin.comments') }}"
                         class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
@@ -78,6 +91,17 @@
                         <i class="fa-regular fa-comments w-5 text-lg"></i>
                         <span class="text-sm font-medium">نظرات</span>
                     </a>
+
+                     <a href="{{ route('admin.contacts.index') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/contact**')
+           ? 'bg-indigo-600 text-white shadow-md'
+           : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
+                        <i class="fa-regular fa-comment-dots w-5 text-lg"></i>
+                        <span class="text-sm font-medium">ارتباطات و پیشنهادات</span>
+                    </a>
+
+                    
 
                 </div>
                 <!-- فرم خروج از سیستم -->
@@ -114,7 +138,7 @@
                     <i class="fa-regular fa-bell"></i>
                 </div>
                 <div class="flex shrink-0">
-                    <img class="w-8 h-8 rounded-full object-cover" src="image/person.jpg" alt="profile">
+                    <img class="w-8 h-8 rounded-full object-cover" src="/image/person.png" alt="profile">
                 </div>
 
             </div>

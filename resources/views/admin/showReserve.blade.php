@@ -100,6 +100,33 @@
                     </div>
                 </div>
 
+                <!-- اطلاعات همراهان -->
+                @if($reservation->companions && count($reservation->companions) > 0)
+                <div class="mt-6">
+                    <h4 class="font-bold text-gray-800 border-b pb-2 mb-3">اطلاعات همراهان</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">نام و نام خانوادگی</th>
+                                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">کد ملی</th>
+                                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">شماره تماس</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($reservation->companions as $companion)
+                                <tr>
+                                    <td class="px-4 py-2 text-sm text-gray-800">{{ $companion->full_name }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $companion->national_code ?? '-' }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-600">{{ $companion->phone ?? '-' }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @endif
+
                 <!-- درخواست ویژه -->
                 @if($reservation->notes)
                 <div class="mt-6">

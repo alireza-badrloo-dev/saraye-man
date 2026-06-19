@@ -208,7 +208,7 @@
                     @if ($accommodations->count() > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             @foreach ($accommodations as $item)
-                                <div class="bg-white rounded-xl overflow-hidden transition group">
+                                <div class="bg-white rounded-xl  overflow-hidden  transition group">
                                     <a href="{{ route('details', $item->id) }}">
                                         @php
                                             $images = is_string($item->images)
@@ -232,7 +232,7 @@
                                             </div>
                                         @endif
 
-                                        <div class="">
+                                        <div class="py-2">
                                             <h2 class="text-md font-bold text-gray-800 mb-1 line-clamp-1">
                                                 {{ $item->title }}</h2>
                                             <div

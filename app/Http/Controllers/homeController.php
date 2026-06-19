@@ -12,8 +12,10 @@ class homeController extends Controller
     {
 
         $data = Accommodation::where('status', 'active')->withMin('rooms', 'price')->get();
-        $city = City::all();
+        $city = City::all()->take(8);
 
         return view('user.home', compact('data', 'city'));
     }
+
+    
 }

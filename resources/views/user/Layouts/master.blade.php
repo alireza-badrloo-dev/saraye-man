@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>سرای من</title>
-   
 
+    <!-- در بخش head -->
+    <link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
     @vite(['resources/css/accommodations.css', 'resources/js/accomodations.js', 'resources/js/homeModal.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/js/modal.js'])
 </head>
 
@@ -31,7 +32,9 @@
             <div class="hidden  md:flex   w-3/5 lg:w-3/4">
                 <a href="{{ route('accommodations') }}" class="hover:text-orange-500 me-3 text-gray-600">اقامتگاه</a>
                 <a href="#" class="hover:text-orange-500 me-3 text-gray-600">مقاصد</a>
-                <a href="#" class="hover:text-orange-500 me-3 text-gray-600">محصولات</a>
+                <a href="{{ route('about') }}" class="hover:text-orange-500 me-3 text-gray-600">درباره ما</a>
+                <a href="{{ route('contact') }}" class="hover:text-orange-500 me-3 text-gray-600">تماس با ما</a>
+
             </div>
             <!-- منوی دسکتاپ -->
             <div class="flex items-center  text-sm  text-gray-600">
@@ -120,81 +123,106 @@
     @yield('Mycontent')
 
 
-    <footer class="mx-10  md:mx-20 xl:mx-40 ">
-
-        <div class=" grid grid-rows-6 lg:grid-rows-1 lg:grid-cols-6 gap-3 lg:gap-8 ">
-            <div class="lg:col-span-2">
-                <div class="flex items-center">
-                    <img class="w-16" src="/image/Artboard 1.svg" alt="">
-                    <h1 class=" text-xl text-orange-500 ">سرای من</h1>
-                </div>
-
-                <p class="text-sm  text-gray-600 text-justify mt-4">اقامت 24 به عنوان اولین مرکز رسمی
-                    رزرواسیون هتل در ایران از سال 1385 فعالیت خود را آغاز کرده و در حال حاضر علاوه‌بر رزرو هتل داخلی
-                    و
-                    خارجی، رزرو تور و بلیط هواپیما را نیز به خدمات خود افزوده است. </p>
-
-
+<footer class="mx-10 md:mx-20 xl:mx-40 border-t border-gray-200 pt-8">
+    <div class="grid grid-rows-6 lg:grid-rows-1 lg:grid-cols-6 gap-3 lg:gap-8">
+        
+        <!-- بخش اول - لوگو و توضیحات -->
+        <div class="lg:col-span-2">
+            <div class="flex items-center">
+                <img class="w-14" src="/image/Artboard 1.svg" alt="سرای من">
+                <h1 class="text-2xl font-bold text-orange-500 mr-2">سرای من</h1>
             </div>
-            <div>
-                <p class="mb-4 text-base   text-gray-800">اقامتگاها:</p>
-                <ul class="grid grid-cols-2  lg:grid-cols-1 gap-y-3 ">
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/1">اقامتگاه 1</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/2">اقامتگاه 2</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/3">اقامتگاه 3</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/4">اقامتگاه 4</a></li>
-                </ul>
-            </div>
-            <div>
-                <p class="mb-4 text-base   text-gray-800">شهرها:</p>
-                <ul class="grid grid-cols-2  lg:grid-cols-1 gap-y-3 ">
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/1">شهر 1</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/2">شهر 2</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/3">شهر 3</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600" href="product/4">شهر 4</a></li>
-                </ul>
-            </div>
-            <div>
-                <p class="mb-4 text-base   text-gray-800">محصولات محلی:</p>
-                <ul class="grid grid-cols-2  lg:grid-cols-1 gap-y-3 ">
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600 " href="product/1">محصول 1</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600 " href="product/2">محصول 2</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600 " href="product/3">محصول 3</a></li>
-                    <li><a class="text-sm hover:text-orange-500 text-gray-600 " href="product/4">محصول 4</a></li>
-                </ul>
-            </div>
-            <div>
-                <p class="mb-4 text-base   text-gray-800">ارتباط با ما:</p>
-                <ul class=" grid grid-cols-2  lg:grid-cols-1 gap-y-3 ">
-                    <li class="flex items-center hover:text-fuchsia-500 text-sm  text-gray-600">
-                        <img src="/icons/instagram.svg" class="me-2" alt="">
-                        <a href="product/1">اینستاگرام</a>
-                    </li>
-                    <li class="flex items-center hover:text-blue-800 text-sm text-gray-600">
-                        <img src="/icons/telegram.svg" class="me-2" alt="">
-                        <a href="product/1">تلگرام</a>
-                    </li>
-                    <li class="flex items-center hover:text-purple-800 text-sm text-gray-600">
-                        <img src="/icons/aparat.svg" class="me-2" alt="">
-                        <a href="product/1">آپارات</a>
-                    </li>
-                    <li class="flex items-center hover:text-blue-500 text-sm text-gray-600">
-                        <img src="/icons/twitter.svg" class="me-2" alt="">
-                        <a href="product/1">توییتر</a>
-                    </li>
-
-                </ul>
-            </div>
+            <p class="text-sm text-gray-600 text-justify mt-4 leading-relaxed">
+                سرای من به عنوان اولین مرجع تخصصی رزرو آنلاین اقامتگاه‌های بوم‌گردی و ویلا در ایران، 
+                از سال ۱۳۹۵ فعالیت خود را آغاز کرده است.
+            </p>
         </div>
-        <hr class="text-gray-400 my-4" />
-        <div class="w-full flex items-center space-x-2 justify-center ">
-            <span class="text-gray-600 text-xs ">سرای من |</span>
-            <p class="text-xs text-gray-500"> تمامی خدمات این وب سایت دارای مجوزهای لازم از مراجع مربوطه می باشد و
-                فعالیت های این سایت تابع قوانین و مقررات جمهوری اسلامی ایران است. </p>
+
+        <!-- بخش دوم - دسترسی سریع -->
+        <div>
+            <p class="mb-4 text-base font-semibold text-gray-800 border-r-2 border-orange-500 pr-2">دسترسی سریع</p>
+            <ul class="grid grid-cols-2 lg:grid-cols-1 gap-y-3">
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('about') }}">درباره ما</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('contact') }}">تماس با ما</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="#">قوانین</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="#">سوالات متداول</a></li>
+            </ul>
         </div>
-    </footer>
 
+        <!-- بخش سوم - شهرهای محبوب -->
+        <div>
+            <p class="mb-4 text-base font-semibold text-gray-800 border-r-2 border-orange-500 pr-2">شهرهای محبوب</p>
+            <ul class="grid grid-cols-2 lg:grid-cols-1 gap-y-3">
+                @php
+                    $popularCities = App\Models\City::withCount('accommodations')
+                        ->having('accommodations_count', '>', 0)
+                        ->orderBy('accommodations_count', 'desc')
+                        ->take(6)
+                        ->get();
+                @endphp
+                @foreach($popularCities as $city)
+                    <li>
+                        <a class="text-sm hover:text-orange-500 text-gray-600 transition" 
+                           href="{{ route('city', $city->id) }}">
+                            {{ $city->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
 
+        <!-- بخش چهارم - اقامتگاه‌ها -->
+        <div>
+            <p class="mb-4 text-base font-semibold text-gray-800 border-r-2 border-orange-500 pr-2">اقامتگاه‌ها</p>
+            <ul class="grid grid-cols-2 lg:grid-cols-1 gap-y-3">
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('accommodations') }}">همه اقامتگاه‌ها</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('accommodations', ['sort' => 'rating_desc']) }}">محبوب‌ترین‌ها</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('accommodations', ['sort' => 'price_asc']) }}">ارزان‌ترین‌ها</a></li>
+                <li><a class="text-sm hover:text-orange-500 text-gray-600 transition" href="{{ route('accommodations', ['facilities' => 'wi-fi']) }}">دارای وای‌فای</a></li>
+            </ul>
+        </div>
+
+        <!-- بخش پنجم - ارتباط با ما -->
+        <div>
+            <p class="mb-4 text-base font-semibold text-gray-800 border-r-2 border-orange-500 pr-2">ارتباط با ما</p>
+            <ul class="grid grid-cols-2 lg:grid-cols-1 gap-y-3">
+                <li class="flex items-center text-sm text-gray-600 hover:text-orange-500 transition">
+                    <img src="/icons/instagram.svg" class="me-2" alt="">
+                    <a href="#">اینستاگرام</a>
+                </li>
+                <li class="flex items-center text-sm text-gray-600 hover:text-orange-500 transition">
+                    <img src="/icons/telegram.svg" class="me-2" alt="">
+                    <a href="#">تلگرام</a>
+                </li>
+                <li class="flex items-center text-sm text-gray-600 hover:text-orange-500 transition">
+                    <img src="/icons/aparat.svg" class="me-2" alt="">
+                    <a href="#">آپارات</a>
+                </li>
+                <li class="flex items-center text-sm text-gray-600 hover:text-orange-500 transition">
+                    <img src="/icons/twitter.svg" class="me-2" alt="">
+                    <a href="#">توییتر</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <hr class="text-gray-300 my-6">
+
+    <div class="w-full flex flex-col md:flex-row items-center justify-center gap-2">
+        <span class="text-gray-600 text-xs">سرای من |</span>
+        <p class="text-xs text-gray-500 text-center">
+            تمامی خدمات این وب سایت دارای مجوزهای لازم از مراجع مربوطه می باشد و
+            فعالیت های این سایت تابع قوانین و مقررات جمهوری اسلامی ایران است.
+        </p>
+    </div>
+</footer>
+
+    <script type="text/javascript" src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+
+    <script>
+        // فعال‌سازی تقویم روی همه input‌های دارای data-jdp
+        jalaliDatepicker.startWatch();
+    </script>
 </body>
 
 </html>
