@@ -175,7 +175,7 @@
 
         @if(method_exists($comments, 'links'))
         <div class="px-6 py-4 border-t">
-            {{ $comments->links() }}
+            {{ $comments->links("vendor.pagination.admin-indigo") }}
         </div>
         @endif
     </div>

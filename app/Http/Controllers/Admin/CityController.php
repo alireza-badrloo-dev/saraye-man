@@ -13,7 +13,7 @@ class CityController extends Controller
     {
         $cities = City::withCount('accommodations')
             ->orderBy('name')
-            ->paginate(15);
+            ->paginate(5);
         
         return view('admin.city', compact('cities'));
     }

@@ -181,7 +181,7 @@
 
         @if (method_exists($users, 'links'))
             <div class="px-6 py-4 border-t">
-                {{ $users->links() }}
+                {{ $users->links("vendor.pagination.admin-indigo") }}
             </div>
         @endif
     </div>

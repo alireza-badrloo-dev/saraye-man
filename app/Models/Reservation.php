@@ -21,6 +21,7 @@ class Reservation extends Model
         'notes',
         'authority',
         'ref_id',
+         'cancelled_at',
         'transaction_id',
 
     ];
@@ -28,6 +29,7 @@ class Reservation extends Model
     protected $casts = [
         'check_in' => 'date',
         'check_out' => 'date',
+        'cancelled_at' => 'datetime',
     ];
 
     public static function generateTrackingCode()

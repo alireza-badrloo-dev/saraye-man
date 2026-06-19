@@ -13,6 +13,7 @@
             {{ session('error') }}
         </div>
     @endif
+
     <div class="w-full p-4">
         <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <h1 class="text-xl font-bold text-gray-800">رزرو های من</h1>
@@ -72,14 +73,14 @@
                                             {{ $reservation->room->title ?? 'نامشخص' }}
                                         </p>
                                     </div>
-                                    <<div class="text-left">
+                                    <div class="text-left">
                                         @if ($reservation->status == 'confirmed')
                                             <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
                                                 <i class="fas fa-check-circle ml-1"></i> تایید شده
                                             </span>
                                         @elseif($reservation->status == 'pending')
                                             <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">
-                                                <i class="fas fa-clock ml-1"></i> در انتظار پرداخت
+                                                <i class="fas fa-clock ml-1"></i> در انتظار
                                             </span>
                                         @elseif($reservation->status == 'cancelled')
                                             <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
@@ -94,64 +95,97 @@
                                                 <i class="fas fa-question-circle ml-1"></i> نامشخص
                                             </span>
                                         @endif
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100">
-                                <div>
-                                    <p class="text-xs text-gray-400">تاریخ ورود</p>
-                                    <p class="text-sm font-medium text-gray-700">
-                                        {{ \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_in)->format('Y/m/d') }}
-                                    </p>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100">
+                                    <div>
+                                        <p class="text-xs text-gray-400">تاریخ ورود</p>
+                                        <p class="text-sm font-medium text-gray-700">
+                                            {{ \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_in)->format('Y/m/d') }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400">تاریخ خروج</p>
+                                        <p class="text-sm font-medium text-gray-700">
+                                            {{ \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_out)->format('Y/m/d') }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400">تعداد شب</p>
+                                        <p class="text-sm font-medium text-gray-700">{{ $reservation->nights }} شب</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-xs text-gray-400">تاریخ خروج</p>
-                                    <p class="text-sm font-medium text-gray-700">
-                                        {{ \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_out)->format('Y/m/d') }}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-400">تعداد شب</p>
-                                    <p class="text-sm font-medium text-gray-700">{{ $reservation->nights }} شب</p>
-                                </div>
-                            </div>
 
-                            <div
-                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 pt-4 border-t border-gray-100">
-                                <div>
-                                    <p class="text-xs text-gray-400">کد پیگیری</p>
-                                    <p class="text-sm font-mono text-gray-600">
-                                        {{ $reservation->tracking_code ?? 'نامشخص' }}</p>
+                                <div
+                                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 pt-4 border-t border-gray-100">
+                                    <div>
+                                        <p class="text-xs text-gray-400">کد پیگیری</p>
+                                        <p class="text-sm font-mono text-gray-600">
+                                            {{ $reservation->tracking_code ?? 'نامشخص' }}</p>
+                                    </div>
+                                    <div class="text-left sm:text-right mt-3 sm:mt-0">
+                                        <p class="text-xs text-gray-400">مبلغ پرداختی</p>
+                                        <p class="text-xl font-bold text-orange-500">
+                                            {{ number_format($reservation->total_price) }} <span class="text-sm">تومان</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="text-left sm:text-right mt-3 sm:mt-0">
-                                    <p class="text-xs text-gray-400">مبلغ پرداختی</p>
-                                    <p class="text-xl font-bold text-orange-500">
-                                        {{ number_format($reservation->total_price) }} <span class="text-sm">تومان</span>
-                                    </p>
+
+                                <!-- دکمه لغو رزرو - با روت user.reserve -->
+                                <div class="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+                                    @if ($reservation->status != 'cancelled' && $reservation->status != 'completed')
+                                        <form action="{{ route('user.reserve.cancel', $reservation->id) }}"
+                                            method="POST" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center gap-2"
+                                                onclick="return confirm('آیا از لغو این رزرو مطمئن هستید؟')">
+                                                <i class="fas fa-times"></i>
+                                                لغو رزرو
+                                            </button>
+                                        </form>
+                                    @elseif($reservation->status == 'cancelled')
+                                        <span class="bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm">
+                                            <i class="fas fa-times-circle ml-1"></i>
+                                            این رزرو لغو شده است
+                                        </span>
+                                    @elseif($reservation->status == 'completed')
+                                        <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm">
+                                            <i class="fas fa-check-double ml-1"></i>
+                                            این رزرو به پایان رسیده است
+                                        </span>
+                                    @endif
+
+                                    <a href="{{ route('user.reserve.show', $reservation->id) }}"
+                                        class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center gap-2">
+                                        <i class="fas fa-eye"></i>
+                                        جزئیات
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                @endforeach
             </div>
-        @endforeach
-    </div>
 
-    <!-- Pagination -->
-    @if (method_exists($reservations, 'links'))
-        <div class="mt-6">
-            {{ $reservations->links() }}
-        </div>
-    @endif
-@else
-    <div class="text-center py-12 mt-6  ">
-        <i class="fa-regular fa-calendar-xmark text-gray-300 text-6xl mb-4"></i>
-        <p class="text-gray-500 text-lg">فعلا رزروی انجام ندادید</p>
-        <p class="text-gray-400 text-sm mt-2">برای رزرو اقامتگاه، به صفحه اقامتگاه‌ها بروید</p>
-        <a href="{{ route('home') }}"
-            class="inline-block mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition">
-            مشاهده اقامتگاه‌ها
-        </a>
-    </div>
-    @endif
+            <!-- Pagination -->
+            @if (method_exists($reservations, 'links'))
+                <div class="mt-6">
+                    {{ $reservations->links() }}
+                </div>
+            @endif
+        @else
+            <div class="text-center py-12 mt-6">
+                <i class="fa-regular fa-calendar-xmark text-gray-300 text-6xl mb-4"></i>
+                <p class="text-gray-500 text-lg">فعلا رزروی انجام ندادید</p>
+                <p class="text-gray-400 text-sm mt-2">برای رزرو اقامتگاه، به صفحه اقامتگاه‌ها بروید</p>
+                <a href="{{ route('home') }}"
+                    class="inline-block mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition">
+                    مشاهده اقامتگاه‌ها
+                </a>
+            </div>
+        @endif
     </div>
 @endsection

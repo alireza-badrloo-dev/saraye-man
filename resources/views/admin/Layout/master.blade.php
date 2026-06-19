@@ -6,7 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+     
+ <!-- توی هدر -->
+
+
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/admin.css', 'resources/js/admin.js'])
+  
 </head>
 
 <body class="">
@@ -92,16 +97,16 @@
                         <span class="text-sm font-medium">نظرات</span>
                     </a>
 
-                     <a href="{{ route('admin.contacts.index') }}"
+                    <a href="{{ route('admin.contacts.index') }}"
                         class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
        {{ request()->is('admin/contact**')
            ? 'bg-indigo-600 text-white shadow-md'
            : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
-                        <i class="fa-regular fa-comment-dots w-5 text-lg"></i>
-                        <span class="text-sm font-medium">ارتباطات و پیشنهادات</span>
+                        <i class="fa-regular fa-envelope w-5 text-lg"></i>
+                        <span class="text-sm font-medium">پیشنهادات</span>
                     </a>
 
-                    
+
 
                 </div>
                 <!-- فرم خروج از سیستم -->
@@ -150,6 +155,9 @@
             </div>
         </main>
     </div>
+    
+
+
 </body>
 
 </html>

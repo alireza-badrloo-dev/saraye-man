@@ -56,6 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment/confirm/{reservation_id}', [PaymentController::class, 'confirm'])->name('payment.confirm');
     Route::get('/reservation/{room_id}', [reservationsController::class, 'create'])->name('user.reserve.create');
     Route::post('/reservation/store', [reservationsController::class, 'store'])->name('user.reserve.store');
+    Route::get('/reservations/{id}', [reservationsController::class, 'show'])->name('user.reserve.show');
+    Route::put('/user/reservations/{id}/cancel', [reservationsController::class, 'cancel'])->name('user.reserve.cancel');
     Route::get('/user/comment', [dashboardController::class, 'comment'])->name('user.comment');
     Route::get('/user/favourites', [FavouriteController::class, 'index'])->name('user.favourite');
     Route::post('/user/favourite/{id}/toggle', [FavouriteController::class, 'toggle'])->name('favourite.toggle');

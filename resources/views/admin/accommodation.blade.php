@@ -313,7 +313,7 @@
                     <!-- Pagination -->
                     @if (isset($accommodations) && method_exists($accommodations, 'links'))
                         <div class="px-6 py-4 border-t">
-                            {{ $accommodations->links() }}
+                            {{ $accommodations->links("vendor.pagination.admin-indigo") }}
                         </div>
                     @endif
                 </div>

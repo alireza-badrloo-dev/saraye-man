@@ -85,7 +85,7 @@
             <!-- Pagination -->
             @if(method_exists($comments, 'links'))
                 <div class="mt-6">
-                    {{ $comments->links() }}
+                    {{ $comments->links("vendor.pagination.user-orange") }}
                 </div>
             @endif
         @else
