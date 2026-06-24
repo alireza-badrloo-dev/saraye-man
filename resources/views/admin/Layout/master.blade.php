@@ -7,8 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
      
- <!-- توی هدر -->
-
+ 
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/admin.css', 'resources/js/admin.js'])
   
@@ -73,6 +72,15 @@
                         <span class="text-sm font-medium">کاربران</span>
                     </a>
 
+                    <a href="{{ route('admin.blogs.index') }}"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 
+       {{ request()->is('admin/blogs**')
+           ? 'bg-indigo-600 text-white shadow-md'
+           : 'text-gray-400 hover:bg-indigo-500/10 hover:text-gray-300 hover:translate-x-0.5' }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span class="text-sm font-medium">وبلاگ</span>
+                    </a>
+
                     @php
                         $admin = Auth::guard('admin')->user();
                     @endphp
@@ -105,6 +113,8 @@
                         <i class="fa-regular fa-envelope w-5 text-lg"></i>
                         <span class="text-sm font-medium">پیشنهادات</span>
                     </a>
+
+                    
 
 
 

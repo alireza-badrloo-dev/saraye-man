@@ -222,7 +222,7 @@
 
 
                                         @if ($firstImage)
-                                            <img class="w-full rounded-md object-cover group-hover:scale-105 transition duration-300"
+                                            <img class="w-full rounded-t-md object-cover group-hover:scale-105 transition duration-300"
                                                 src="{{ asset('storage/uplouds/' . $firstImage) }}"
                                                 alt="{{ $item->title }}">
                                         @endif
@@ -277,9 +277,11 @@
                         </div>
 
                         <!-- صفحه‌بندی -->
-                        <div class="mt-8">
-                            {{ $accommodations->links("vendor.pagination.user-orange") }}
-                        </div>
+                         @if ($accommodations->hasPages())
+                            <div class="mt-8">
+                                {{ $accommodations->links("vendor.pagination.user-orange") }}
+                            </div>
+                        @endif
                     @else
                         <div class="text-center py-16 bg-white rounded-xl">
                             <i class="fas fa-building text-gray-300 text-6xl mb-4"></i>

@@ -11,9 +11,7 @@ class CityController extends Controller
 {
     public function index()
     {
-        $cities = City::withCount('accommodations')
-            ->orderBy('name')
-            ->paginate(5);
+        $cities = City::withCount('accommodations')->orderBy('name')->paginate(5);
         
         return view('admin.city', compact('cities'));
     }
@@ -30,7 +28,7 @@ class CityController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
-        // ذخیره عکس
+       
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('cities', 'public');
             $validated['image'] = $imagePath;
@@ -38,8 +36,7 @@ class CityController extends Controller
 
         City::create($validated);
 
-        return redirect()->route('admin.cities.index')
-            ->with('success', 'شهر با موفقیت اضافه شد.');
+        return redirect()->route('admin.cities.index')->with('success', 'شهر با موفقیت اضافه شد.');
     }
 
     public function edit($id)
@@ -82,7 +79,7 @@ class CityController extends Controller
             return back()->with('error', 'این شهر دارای اقامتگاه است و قابل حذف نمی‌باشد.');
         }
         
-        // حذف عکس
+        
         if ($city->image) {
             Storage::disk('public')->delete($city->image);
         }

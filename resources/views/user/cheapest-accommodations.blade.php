@@ -5,7 +5,7 @@
             <img class="w-full object-cover" src="/image/home.jpg" alt="home" />
         </picture>
         <div class="mx-1 md:mx-20 xl:mx-40 relative -mt-20">
-            <h1 class="text-2xl text-gray-800 mb-4">نتایج جستجو</h1>
+            <h1 class="text-2xl text-gray-800 mb-4">💰 ارزان‌ترین اقامتگاه‌ها</h1>
 
             <!-- فرم جستجو -->
             <x-search-form />
@@ -177,7 +177,7 @@
                 <!-- لیست اقامتگاه‌ها -->
                 <div class="col-span-full lg:col-span-9">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                        <h1 class="text-xl font-bold text-gray-800">لیست اقامتگاه‌ها</h1>
+                        <h1 class="text-xl font-bold text-gray-800"> ارزان‌ترین اقامتگاه‌ها</h1>
                         <p class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                             <i class="fas fa-building ml-1"></i> {{ $accommodations->total() }} اقامتگاه
                         </p>
@@ -186,21 +186,21 @@
                     <!-- مرتب‌سازی -->
                     <div class="flex flex-wrap items-center gap-2 mb-6">
                         <span class="text-sm text-gray-600 ml-2">مرتب سازی:</span>
-                        <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'default'])) }}"
-                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ !request('sort') || request('sort') == 'default' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                            پیشفرض
+                        <a href="{{ route('cheapestAccommodations', array_merge(request()->all(), ['sort' => 'price_asc'])) }}"
+                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ !request('sort') || request('sort') == 'price_asc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            ارزان‌ترین
                         </a>
-                        <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'price_asc'])) }}"
-                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'price_asc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                            کمترین قیمت
-                        </a>
-                        <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'price_desc'])) }}"
+                        <a href="{{ route('cheapestAccommodations', array_merge(request()->all(), ['sort' => 'price_desc'])) }}"
                             class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'price_desc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                            بیشترین قیمت
+                            گران‌ترین
                         </a>
-                        <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'rating_desc'])) }}"
-                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'rating_desc' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                        <a href="{{ route('cheapestAccommodations', array_merge(request()->all(), ['sort' => 'rating'])) }}"
+                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'rating' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             بالاترین امتیاز
+                        </a>
+                        <a href="{{ route('cheapestAccommodations', array_merge(request()->all(), ['sort' => 'newest'])) }}"
+                            class="sort-link text-sm px-3 py-1.5 rounded-md transition {{ request('sort') == 'newest' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            جدیدترین
                         </a>
                     </div>
 
@@ -208,69 +208,57 @@
                     @if ($accommodations->count() > 0)
                         <div class="grid grid-cols-1 p-4 sm:p-0 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             @foreach ($accommodations as $item)
+                                @php
+                                    $images = is_string($item->images)
+                                        ? json_decode($item->images, true)
+                                        : $item->images ?? [];
+                                    $firstImage = $images[0] ?? null;
+                                    $rating = $item->rating ?? 0;
+                                    $full = floor($rating);
+                                    $half = $rating - $full >= 0.5 ? 1 : 0;
+                                    $empty = 5 - $full - $half;
+                                    $minPrice = $item->rooms->min('price') ?? 0;
+                                @endphp
                                 <div class="bg-white rounded-xl overflow-hidden transition group">
-                                    @php
-                                        $images = is_string($item->images)
-                                            ? json_decode($item->images, true)
-                                            : $item->images ?? [];
-                                        $firstImage = $images[0] ?? null;
-                                        $rating = $item->rating ?? 0;
-                                        $full = floor($rating);
-                                        $half = $rating - $full >= 0.5 ? 1 : 0;
-                                        $empty = 5 - $full - $half;
-                                        $minPrice = $item->rooms->min('price') ?? 0;
-                                    @endphp
                                     <a href="{{ route('details', $item->id) }}">
+                                        <div class="relative">
+                                            @if ($firstImage)
+                                                <img class="w-full rounded-t-md object-cover group-hover:scale-105 transition duration-300 h-48"
+                                                    src="{{ asset('storage/uplouds/' . $firstImage) }}"
+                                                    alt="{{ $item->title }}">
+                                            @else
+                                                <div class="w-full h-48 bg-gray-200 flex items-center justify-center rounded-md">
+                                                    <i class="fas fa-image text-gray-400 text-4xl"></i>
+                                                </div>
+                                            @endif
 
+                                        </div>
 
-
-                                        @if ($firstImage)
-                                            <img class="w-full rounded-t-md object-cover group-hover:scale-105 transition duration-300"
-                                                src="{{ asset('storage/uplouds/' . $firstImage) }}"
-                                                alt="{{ $item->title }}">
-                                        @endif
-
-
-
-                                        <div class="my-2 space-y-1">
+                                        <div class="my-2 space-y-1 p-2">
                                             <h2 class="text-md text-gray-800">{{ $item->title }}</h2>
 
-                                            <div
-                                                class="text-xs text-justify text-gray-600 w-48 2xl:64 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                            <div class="text-xs text-justify text-gray-600 w-48 2xl:64 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                                 {{ $item->address }}
                                             </div>
 
                                             <div class="flex items-center justify-between">
-
-
                                                 <p class="text-gray-400 text-xs">
                                                     از <span class="text-gray-600 text-sm">{{ number_format($minPrice) }}
                                                         تومان</span>/ 1شب
                                                 </p>
 
+                                                <div class="flex items-center text-gray-400" dir="ltr">
+                                                    @for ($i = 0; $i < $full; $i++)
+                                                        <span class="text-yellow-400">★</span>
+                                                    @endfor
 
-                                                <div class="flex items-center text-gray-400">
-                                                    @php
-                                                        $rating = $item->rating;
-                                                        $full = floor($rating);
-                                                        $half = $rating - $full >= 0.5 ? 1 : 0;
-                                                        $empty = 5 - $full - $half;
-                                                    @endphp
+                                                    @if ($half)
+                                                        <span class="text-yellow-400">☆</span>
+                                                    @endif
 
-                                                    <div class="flex items-center text-gray-400" dir="ltr">
-                                                        @for ($i = 0; $i < $full; $i++)
-                                                            <span class="text-yellow-400">★</span>
-                                                        @endfor
-
-                                                        @if ($half)
-                                                            <span class="text-yellow-400">☆</span>
-                                                        @endif
-
-                                                        @for ($i = 0; $i < $empty; $i++)
-                                                            <span>★</span>
-                                                        @endfor
-                                                    </div>
-
+                                                    @for ($i = 0; $i < $empty; $i++)
+                                                        <span>★</span>
+                                                    @endfor
                                                 </div>
                                             </div>
                                         </div>
@@ -280,13 +268,13 @@
                         </div>
 
                         <!-- صفحه‌بندی -->
-                        @if ($accommodations->hasPages())
+                         @if ($accommodations->hasPages())
                             <div class="mt-8">
                                 {{ $accommodations->links("vendor.pagination.user-orange") }}
                             </div>
                         @endif
                     @else
-                        <div class="text-center py-16 bg-white rounded-xl ">
+                        <div class="text-center py-16 bg-white rounded-xl">
                             <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
                             <p class="text-gray-500 text-lg">هیچ اقامتگاهی با این مشخصات یافت نشد.</p>
                             <a href="{{ route('home') }}"
@@ -299,7 +287,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

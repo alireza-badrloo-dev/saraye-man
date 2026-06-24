@@ -39,10 +39,10 @@ class dasboardController extends Controller
             ->limit(5)
             ->get();
 
-        // ========== ساخت آخرین فعالیت‌ها ==========
+       
         $activities = collect();
 
-        // اضافه کردن رزروهای جدید
+       
         foreach ($recentReservations as $reservation) {
             $activities->push([
                 'icon' => 'fa-calendar-check',
@@ -52,7 +52,7 @@ class dasboardController extends Controller
             ]);
         }
 
-        // اضافه کردن نظرات جدید
+        
         foreach ($recentComments as $comment) {
             $activities->push([
                 'icon' => 'fa-comment',
@@ -62,7 +62,7 @@ class dasboardController extends Controller
             ]);
         }
 
-        // اضافه کردن کاربران جدید
+        
         $newUsersList = User::orderBy('created_at', 'desc')->limit(5)->get();
         foreach ($newUsersList as $user) {
             $activities->push([
@@ -73,7 +73,7 @@ class dasboardController extends Controller
             ]);
         }
 
-        // مرتب‌سازی بر اساس زمان و گرفتن ۱۰ تا اول
+       
         $recentActivities = $activities->sortByDesc('time')->take(10);
 
         return view('admin.dashboard', compact(

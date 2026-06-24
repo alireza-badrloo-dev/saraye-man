@@ -16,11 +16,7 @@ class dashboardController extends Controller
     }
 
 
-    // public function reserve()
-    // {
-    //     $user = Auth::user();
-    //     return view('user.reserve', compact('user'));
-    // }
+   
 
     public function comment()
     {
@@ -34,7 +30,7 @@ class dashboardController extends Controller
 
     public function favorite()
     {
-        $user = Auth::user(); // کل اطلاعات کاربر
+        $user = Auth::user(); 
         return view('user.favorite', compact('user'));
     }
 

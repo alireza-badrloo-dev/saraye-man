@@ -32,7 +32,7 @@ class reservationsController extends Controller
     public function store(Request $request)
     {
         try {
-            // اعتبارسنجی
+
             $request->validate([
                 'room_id' => 'required|exists:rooms,id',
                 'check_in' => 'required|string',
@@ -42,9 +42,37 @@ class reservationsController extends Controller
                 'phone' => 'required|string|max:20',
                 'email' => 'required|email|max:255',
                 'special_request' => 'nullable|string',
+            ], [
+                
+                'room_id.required' => 'انتخاب اتاق الزامی است.',
+                'room_id.exists' => 'اتاق انتخاب شده معتبر نیست.',
+
+                'check_in.required' => 'وارد کردن تاریخ ورود الزامی است.',
+                'check_in.string' => 'تاریخ ورود باید به صورت متن باشد.',
+
+                'check_out.required' => 'وارد کردن تاریخ خروج الزامی است.',
+                'check_out.string' => 'تاریخ خروج باید به صورت متن باشد.',
+
+                'guests.required' => 'وارد کردن تعداد مهمانان الزامی است.',
+                'guests.integer' => 'تعداد مهمانان باید به صورت عدد باشد.',
+                'guests.min' => 'تعداد مهمانان باید حداقل ۱ نفر باشد.',
+
+                'full_name.required' => 'وارد کردن نام کامل الزامی است.',
+                'full_name.string' => 'نام کامل باید به صورت متن باشد.',
+                'full_name.max' => 'نام کامل نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+                'phone.required' => 'وارد کردن شماره تماس الزامی است.',
+                'phone.string' => 'شماره تماس باید به صورت متن باشد.',
+                'phone.max' => 'شماره تماس نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+                'email.required' => 'وارد کردن ایمیل الزامی است.',
+                'email.email' => 'فرمت ایمیل وارد شده معتبر نیست.',
+                'email.max' => 'ایمیل نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+                'special_request.string' => 'درخواست ویژه باید به صورت متن باشد.',
             ]);
 
-            // تبدیل تاریخ شمسی به میلادی
+            
             $checkInGregorian = Jalalian::fromFormat('Y/m/d', $request->check_in)->toCarbon();
             $checkOutGregorian = Jalalian::fromFormat('Y/m/d', $request->check_out)->toCarbon();
 
@@ -109,9 +137,7 @@ class reservationsController extends Controller
         }
     }
 
-    /**
-     * نمایش جزئیات رزرو
-     */
+   
     public function show($id)
     {
         $reservation = Reservation::where('user_id', Auth::id())
@@ -121,15 +147,13 @@ class reservationsController extends Controller
         return view('user.showReservation', compact('reservation'));
     }
 
-    /**
-     * لغو رزرو
-     */
+    
     public function cancel($id)
     {
         try {
             $reservation = Reservation::where('user_id', Auth::id())->findOrFail($id);
 
-            // بررسی اینکه رزرو قابل لغو هست یا نه
+            
             if ($reservation->status == 'cancelled') {
                 return back()->with('error', 'این رزرو قبلاً لغو شده است.');
             }
@@ -139,12 +163,12 @@ class reservationsController extends Controller
             }
 
 
-            // بررسی تاریخ ورود (اختیاری - میتونی این رو هم برداری)
+            
             $now = now();
             $checkIn = $reservation->check_in;
             $hoursDiff = $now->diffInHours($checkIn, false);
 
-            // میتونی این شرط رو هم برداری تا هر زمانی قابل لغو باشه
+            
             if ($hoursDiff <= 12 && $hoursDiff >= 0) {
                 return back()->with('error', 'به دلیل نزدیک بودن به تاریخ ورود (کمتر از 12 ساعت)، امکان لغو آنلاین وجود ندارد. لطفاً با پشتیبانی تماس بگیرید.');
             }
@@ -153,7 +177,7 @@ class reservationsController extends Controller
                 return back()->with('error', 'تاریخ ورود گذشته است و امکان لغو وجود ندارد.');
             }
 
-            // لغو رزرو
+            
             $reservation->update([
                 'status' => 'cancelled',
                 'cancelled_at' => now()
@@ -206,7 +230,7 @@ class reservationsController extends Controller
             $reservation = Reservation::findOrFail($id);
             $reservation->update(['status' => $request->status]);
 
-            // اگر لغو شد، زمان لغو را ثبت کن
+            
             if ($request->status == 'cancelled') {
                 $reservation->update(['cancelled_at' => now()]);
             }

@@ -20,7 +20,7 @@
         <div class=" mx-1  md:mx-20 xl:mx-40 flex items-center  justify-between h-full">
             <div class="flex">
                 <!-- دکمه همبرگری (فقط موبایل) -->
-                <button id="menu-toggle" class="md:hidden text-3xl me-2 text-gray-700 focus:outline-none">
+                <button id="menu-open" class="md:hidden text-3xl me-2 text-gray-700 focus:outline-none">
                     ☰
                 </button>
                 <!-- Logo -->
@@ -31,7 +31,7 @@
             </div>
             <div class="hidden  md:flex   w-3/5 lg:w-3/4">
                 <a href="{{ route('accommodations') }}" class="hover:text-orange-500 me-3 text-gray-600">اقامتگاه</a>
-                <a href="#" class="hover:text-orange-500 me-3 text-gray-600">مقاصد</a>
+                <a href="{{ route('blog.index') }}" class="hover:text-orange-500 me-3 text-gray-600">مجله</a>
                 <a href="{{ route('about') }}" class="hover:text-orange-500 me-3 text-gray-600">درباره ما</a>
                 <a href="{{ route('contact') }}" class="hover:text-orange-500 me-3 text-gray-600">تماس با ما</a>
 
@@ -42,7 +42,7 @@
                 <div class="relative z-10">
 
                     @guest
-                        <a href="{{ route('user.register.show') }}" id="openUser"
+                        <a href="{{ route('user.login.show') }}" 
                             class="p-1 w-28 bg-orange-100 border text-center border-orange-500 rounded-3xl text-orange-500 px-4 py-1 hover:bg-orange-500 hover:text-white transition">
                             ورود / ثبت‌نام
                         </a>
@@ -85,37 +85,72 @@
     </div>
 
     <!-- منوی موبایل تمام‌صفحه -->
-    <div id="mobile-menu" class="fixed inset-0 bg-orange-400 hidden p-3  z-10 animate-fadeIn">
-        <div class="flex flex-col  justify-start items-start text-white space-x-6 text-lg">
-            <button id="menu-close" class="absolute top-5 left-5 text-3xl focus:outline-none  text-gray-800">
-                ✕
-            </button>
+    <div id="mobile-menu" class="fixed inset-0 bg-white hidden p-6 z-50 animate-fadeIn shadow-2xl">
+    <div class="flex flex-col justify-start items-start h-full">
+        <!-- دکمه بستن -->
+        <button id="menu-close" class="absolute top-5 left-5 text-3xl focus:outline-none text-gray-600 hover:text-orange-500 transition-colors duration-200">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
 
-
-            <a href="#" class="text-gray-800 hover:bg-orange-500 hover:text-white w-full p-3  ">اقامتگاه</a>
-            <a href="#" class="text-gray-800 hover:bg-orange-500 hover:text-white w-full p-3  ">مقاصد</a>
-            <a href="#" class="text-gray-800 hover:bg-orange-500 hover:text-white w-full p-3  ">محصولات</a>
-
-
-            <a id="openUser" href="#"
-                class="mt-5 bg-orange-500 text-white rounded-3xl px-5 py-2 hover:bg-orange-600 transition">
-                ورود / ثبت‌نام
-            </a>
-
-            <div class="flex items-center mt-4 space-x-2 space-x-reverse">
-                <p class="me-2">09120000000</p>
-                <span><svg class="" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"
-                        width="28" height="28" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                            d="M8.754 5.63c-.197-.536-.85-.79-1.341-.514L5.398 6.252c-.297.168-.433.466-.389.738a14.402 14.402 0 0 0 3.98 7.803 15.095 15.095 0 0 0 7.832 4.192.801.801 0 0 0 .839-.38l1.23-2.076c.243-.41.061-1.011-.506-1.23a16.67 16.67 0 0 1-2.843-1.425c-.429-.27-.97-.132-1.191.23-.443.723-1.375.937-2.048.478a10.559 10.559 0 0 1-3.007-3.121c-.437-.7-.153-1.587.55-1.982a.744.744 0 0 0 .26-1.046c-.54-.891-.992-1.83-1.351-2.804ZM6.43 3.373c1.658-.935 3.616-.023 4.2 1.564.315.853.711 1.677 1.185 2.46.67 1.105.502 2.587-.503 3.478a8.56 8.56 0 0 0 1.675 1.732c.949-1.015 2.508-1.124 3.617-.428.79.495 1.628.915 2.502 1.253 1.536.594 2.475 2.48 1.505 4.116l-1.23 2.076a2.801 2.801 0 0 1-2.947 1.322 17.095 17.095 0 0 1-8.87-4.75 16.403 16.403 0 0 1-4.53-8.886c-.191-1.184.432-2.265 1.381-2.8L6.43 3.373Z"
-                            clip-rule="evenodd" fill="#f97316"></path>
-                    </svg></span>
-            </div>
+        <!-- لوگو -->
+        <div class="flex items-center gap-2 mb-8 mt-4">
+            <img class="w-10" src="/image/Artboard 1.svg" alt="سرای من">
+            <h1 class="text-2xl font-bold text-orange-500">سرای من</h1>
         </div>
 
-    </div>
+        <!-- لینک‌های منو -->
+        <nav class="flex flex-col w-full space-y-1">
+            <a href="{{ route('accommodations') }}" 
+                class="text-gray-700 hover:bg-orange-50 hover:text-orange-500 w-full p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-base font-medium border-b border-gray-100">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                اقامتگاه‌ها
+            </a>
 
-    {{-- @include('user.registeruser') --}}
+            <a href="{{ route('blog.index') }}" 
+                class="text-gray-700 hover:bg-orange-50 hover:text-orange-500 w-full p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-base font-medium border-b border-gray-100">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                </svg>
+                مجله
+            </a>
+
+            <a href="{{ route('about') }}" 
+                class="text-gray-700 hover:bg-orange-50 hover:text-orange-500 w-full p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-base font-medium border-b border-gray-100">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                درباره ما
+            </a>
+
+            <a href="{{ route('contact') }}" 
+                class="text-gray-700 hover:bg-orange-50 hover:text-orange-500 w-full p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-base font-medium border-b border-gray-100">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                تماس با ما
+            </a>
+        </nav>
+
+        <!-- دکمه ورود/ثبت‌نام -->
+        <a id="openUser" href="{{ route('user.login.show') }}"
+            class="w-full mt-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl px-6 py-3.5 hover:shadow-lg hover:shadow-orange-200 transition-all duration-300 text-center font-medium text-base flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            ورود / ثبت‌نام
+        </a>
+
+       
+    </div>
+</div>
+
+
+
+    
 
 
 

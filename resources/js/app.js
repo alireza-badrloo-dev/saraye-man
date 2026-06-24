@@ -15,7 +15,8 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 
 
 
-// فعال‌سازی Swiper
+
+
 var swiper = new Swiper('.swiper-container', {
 
     modules: [Navigation, Pagination, Autoplay],
@@ -65,32 +66,32 @@ var swiper = new Swiper('.swiper-container', {
     // loop: true, // فعال کردن حلقه اسلایدها
     // speed: 800, // سرعت انیمیشن انتقال به میلی‌ثانیه
 });
-
-
-var swiper = new Swiper('.swiper-second', {
-
-    modules: [Navigation, Pagination, Autoplay],
-    slidesPerView: 1,
-    spaceBetween: 10,
-    breakpoints: {
-        425: {
-            slidesPerView: 2,
+document.addEventListener('DOMContentLoaded', function() {
+    // اسلایدرهای اصلی
+    const mainSliders = ['.swiper-second', '.swiper-third', '.swiper-fourth', '.swiper-fifth'];
+    
+    mainSliders.forEach(function(selector) {
+        new Swiper(selector, {
+            slidesPerView: 1,
             spaceBetween: 10,
+            breakpoints: {
+                425: { slidesPerView: 2, spaceBetween: 10 },
+                700: { slidesPerView: 3, spaceBetween: 20 },
+                960: { slidesPerView: 4, spaceBetween: 20 },
+            }
+        });
+    });
+    
+    // اسلایدر جزئیات
+    new Swiper('.swiper-details', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
         },
-        700: {
-            slidesPerView: 3,
-            spaceBetween: 20,
-        },
-
-        960: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-        }
-
-    },
-
+    });
 });
-
 
 var swiper = new Swiper('.swiper-details', {
 
@@ -174,3 +175,82 @@ if (userMenuBtn && userDropdown) {
         event.stopPropagation();
     });
 }
+
+
+// ====== منوی موبایل ======
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // دکمه‌های باز و بسته کردن منو
+    const menuOpenBtn = document.getElementById('menu-open');
+    const menuCloseBtn = document.getElementById('menu-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    // باز کردن منو
+    if (menuOpenBtn) {
+        menuOpenBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileMenu.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // جلوگیری از اسکرول
+        });
+    }
+    
+    // بستن منو
+    if (menuCloseBtn) {
+        menuCloseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileMenu.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+    }
+    
+    // بستن منو با کلیک روی لینک‌ها
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+    });
+    
+    // بستن منو با کلیک روی خارج از آن
+    mobileMenu.addEventListener('click', function(e) {
+        if (e.target === mobileMenu) {
+            mobileMenu.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    });
+    
+    // ====== دکمه ورود/ثبت‌نام ======
+    const openUserBtn = document.getElementById('openUser');
+    if (openUserBtn) {
+        openUserBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // در اینجا می‌توانید مودال ورود را باز کنید
+            // یا به صفحه ورود هدایت کنید
+            // window.location.href = '/login';
+            console.log('باز کردن فرم ورود/ثبت‌نام');
+        });
+    }
+    
+    // ====== جستجو ======
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchInput = this.querySelector('input[type="search"]');
+            const query = searchInput?.value.trim();
+            if (query && query.length > 0) {
+                window.location.href = '/blog/search?search=' + encodeURIComponent(query);
+            }
+        });
+    }
+    
+    // ====== فعال‌سازی لینک‌های منو ======
+    const currentUrl = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+    navLinks.forEach(function(link) {
+        if (link.getAttribute('href') === currentUrl) {
+            link.classList.add('active', 'text-orange-500', 'font-bold');
+        }
+    });
+});

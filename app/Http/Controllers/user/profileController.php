@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class profileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $user = Auth::user();
@@ -18,45 +16,17 @@ class profileController extends Controller
         return view('user.profile', compact('user'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit()
     {
         $user = Auth::user();
         return view('user.profileEdit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request)
-     {
-        
+    {
+
         $validated = $request->validate([
             'first_name'   => 'nullable|string|max:255',
             'last_name'    => 'nullable|string|max:255',
@@ -67,12 +37,33 @@ class profileController extends Controller
             'birth_date'   => ['nullable', 'regex:/^\d{4}\/\d{2}\/\d{2}$/'],
             'address'      => 'nullable|string|max:1000',
         ], [
-            'birth_date.regex' => 'فرمت تاریخ تولد باید شبیه 1403/01/15 باشد.',
+            
+            'first_name.string' => 'نام باید به صورت متن باشد.',
+            'first_name.max' => 'نام نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'last_name.string' => 'نام خانوادگی باید به صورت متن باشد.',
+            'last_name.max' => 'نام خانوادگی نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'nationality.string' => 'ملیت باید به صورت متن باشد.',
+            'nationality.max' => 'ملیت نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'national_id.string' => 'کد ملی باید به صورت متن باشد.',
+            'national_id.max' => 'کد ملی نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'postal_code.string' => 'کد پستی باید به صورت متن باشد.',
+            'postal_code.max' => 'کد پستی نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'gender.in' => 'جنسیت انتخاب شده معتبر نیست. گزینه‌های مجاز: اقا، خانم',
+
+            'birth_date.regex' => 'فرمت تاریخ تولد باید شبیه ۱۴۰۳/۰۱/۱۵ باشد.',
+
+            'address.string' => 'آدرس باید به صورت متن باشد.',
+            'address.max' => 'آدرس نباید بیشتر از ۱۰۰۰ کاراکتر باشد.',
         ]);
 
-        $user = $request->user(); 
+        $user = $request->user();
 
-        
+
         $user->update([
             'first_name'  => $validated['first_name'] ?? $user->first_name,
             'last_name'   => $validated['last_name'] ?? $user->last_name,
@@ -87,11 +78,5 @@ class profileController extends Controller
         return redirect('/user/profile')->with('success', 'اطلاعات با موفقیت ذخیره شد.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    
 }

@@ -12,7 +12,7 @@ class detailAccommodationController extends Controller
     public function index($id)
     {
         $data = Accommodation::with(['comments.room', 'comments.user'])->findOrFail($id);
-        // $accommodation = Accommodation::with('rooms')->findOrFail($id);
+        
         $averageRating = Comment::where('accommodation_id', $data->id)
             ->where('status', 'approved')
             ->avg('rating');
@@ -21,7 +21,7 @@ class detailAccommodationController extends Controller
     public function storeComment(Request $request, $id)
     {
         try {
-            // اعتبارسنجی
+           
             $request->validate([
                 'rating' => 'required|numeric|min:0|max:10',
                 'positive_points' => 'nullable|string|max:500',
@@ -33,7 +33,7 @@ class detailAccommodationController extends Controller
 
             ]);
 
-            // بررسی اینکه کاربر قبلاً نظر نداده
+            
             $existingComment = Comment::where('user_id', Auth::id())
                 ->where('accommodation_id', $id)
                 ->first();
@@ -42,7 +42,7 @@ class detailAccommodationController extends Controller
                 return back()->with('error', 'شما قبلاً برای این اقامتگاه نظر ثبت کرده‌اید.');
             }
 
-            // ایجاد نظر جدید
+            
             $comment = new Comment();
             $comment->user_id = Auth::id();
             $comment->accommodation_id = $id;

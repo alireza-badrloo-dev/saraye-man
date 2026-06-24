@@ -14,30 +14,30 @@ use \Maatwebsite\Excel\Facades\Excel;
 
 class AccommodationsController extends Controller
 {
-    // در کنترلر AccommodationController
+
     public function index(Request $request)
     {
         $query = Accommodation::with('city');
 
-        // فیلتر جستجو
+
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%')
                 ->orWhere('address', 'like', '%' . $request->search . '%');
         }
 
-        // فیلتر وضعیت
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // فیلتر شهر
+
         if ($request->filled('city_id')) {
             $query->where('city_id', $request->city_id);
         }
 
         $accommodations = $query->paginate(15);
 
-        // آمار برای کارت‌ها
+
         $totalAccommodations = Accommodation::count();
         $activeCount = Accommodation::where('status', 'active')->count();
         $pendingCount = Accommodation::where('status', 'pending')->count();
@@ -62,12 +62,12 @@ class AccommodationsController extends Controller
         return view('admin.addAccommodation', compact('cities'));
     }
 
-    // در متد store کنترلر AccommodationController
+
 
     public function store(Request $request)
     {
         try {
-            // اعتبارسنجی
+
             $request->validate([
                 'title' => 'required|string|max:255',
                 'city_id' => 'required|exists:cities,id',
@@ -78,18 +78,66 @@ class AccommodationsController extends Controller
                 'floors' => 'nullable|integer|min:1',
                 'rooms_count' => 'nullable|integer|min:1',
                 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-                // اعتبارسنجی برای اتاق‌ها
                 'rooms' => 'nullable|array',
                 'rooms.*.title' => 'required|string|max:255',
                 'rooms.*.capacity' => 'required|string',
                 'rooms.*.beds' => 'required|string',
                 'rooms.*.price' => 'required|numeric|min:0',
                 'rooms.*.image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            ], [
+
+                'title.required' => 'وارد کردن عنوان اقامتگاه الزامی است.',
+                'title.string' => 'عنوان اقامتگاه باید به صورت متن باشد.',
+                'title.max' => 'عنوان اقامتگاه نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+                'city_id.required' => 'انتخاب شهر الزامی است.',
+                'city_id.exists' => 'شهر انتخاب شده معتبر نیست.',
+
+                'address.required' => 'وارد کردن آدرس اقامتگاه الزامی است.',
+                'address.string' => 'آدرس اقامتگاه باید به صورت متن باشد.',
+
+                'description.required' => 'وارد کردن توضیحات اقامتگاه الزامی است.',
+                'description.string' => 'توضیحات اقامتگاه باید به صورت متن باشد.',
+
+                'check_in_time.required' => 'وارد کردن ساعت ورود الزامی است.',
+
+                'check_out_time.required' => 'وارد کردن ساعت خروج الزامی است.',
+
+                'floors.integer' => 'تعداد طبقات باید به صورت عدد باشد.',
+                'floors.min' => 'تعداد طبقات باید حداقل ۱ باشد.',
+
+                'rooms_count.integer' => 'تعداد اتاق‌ها باید به صورت عدد باشد.',
+                'rooms_count.min' => 'تعداد اتاق‌ها باید حداقل ۱ باشد.',
+
+
+                'images.*.image' => 'فایل انتخاب شده باید تصویر باشد.',
+                'images.*.mimes' => 'فرمت تصویر باید یکی از jpeg, png, jpg, webp باشد.',
+                'images.*.max' => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد.',
+
+                'rooms.array' => 'اتاق‌ها باید به صورت آرایه ارسال شوند.',
+
+
+                'rooms.*.title.required' => 'وارد کردن عنوان اتاق الزامی است.',
+                'rooms.*.title.string' => 'عنوان اتاق باید به صورت متن باشد.',
+                'rooms.*.title.max' => 'عنوان اتاق نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+                'rooms.*.capacity.required' => 'وارد کردن ظرفیت اتاق الزامی است.',
+                'rooms.*.capacity.string' => 'ظرفیت اتاق باید به صورت متن باشد.',
+
+                'rooms.*.beds.required' => 'وارد کردن تعداد تخت‌ها الزامی است.',
+                'rooms.*.beds.string' => 'تعداد تخت‌ها باید به صورت متن باشد.',
+
+                'rooms.*.price.required' => 'وارد کردن قیمت اتاق الزامی است.',
+                'rooms.*.price.numeric' => 'قیمت اتاق باید به صورت عدد باشد.',
+                'rooms.*.price.min' => 'قیمت اتاق نمی‌تواند منفی باشد.',
+
+                'rooms.*.image.image' => 'فایل انتخاب شده باید تصویر باشد.',
+                'rooms.*.image.mimes' => 'فرمت تصویر اتاق باید یکی از jpeg, png, jpg, webp باشد.',
+                'rooms.*.image.max' => 'حجم تصویر اتاق نباید بیشتر از ۲ مگابایت باشد.',
             ]);
 
             DB::beginTransaction();
 
-            // ایجاد اقامتگاه جدید
             $accommodation = new Accommodation();
             $accommodation->title = $request->title;
             $accommodation->city_id = $request->city_id;
@@ -102,7 +150,7 @@ class AccommodationsController extends Controller
             $accommodation->important_notes = $request->important_notes;
             $accommodation->rating = $request->rating;
 
-            // فیلدهای JSON
+
             $accommodation->general_facilities = $request->general_facilities ?? [];
             $accommodation->room_facilities = $request->room_facilities ?? [];
             $accommodation->private_facilities = $request->private_facilities ?? [];
@@ -111,7 +159,6 @@ class AccommodationsController extends Controller
 
             $accommodation->save();
 
-            // ذخیره تصاویر اقامتگاه
             if ($request->hasFile('images')) {
                 $images = [];
                 foreach ($request->file('images') as $image) {
@@ -123,7 +170,7 @@ class AccommodationsController extends Controller
                 $accommodation->save();
             }
 
-            // ذخیره اتاق‌ها
+
             if ($request->has('rooms') && !empty($request->rooms)) {
                 foreach ($request->rooms as $roomData) {
                     $room = new Room();
@@ -133,7 +180,7 @@ class AccommodationsController extends Controller
                     $room->beds = $roomData['beds'];
                     $room->price = $roomData['price'];
 
-                    // ذخیره تصویر اتاق
+
                     if (isset($roomData['image']) && $roomData['image']->isValid()) {
                         $filename = time() . '_' . uniqid() . '.' . $roomData['image']->getClientOriginalExtension();
                         $roomData['image']->storeAs('uplouds/rooms', $filename, 'public');
@@ -154,34 +201,23 @@ class AccommodationsController extends Controller
         }
     }
 
-    public function show(int$id)
+    public function show(int $id)
     {
         $accommodation = Accommodation::with('city')->findOrFail($id);
         return view('admin.showAccommodation', compact('accommodation'));
     }
 
-    public function edit(int$id)
+    public function edit(int $id)
     {
         $accommodation = Accommodation::findOrFail($id);
         $cities = City::orderBy('name', 'asc')->get();
 
-        // دیکد کردن امکانات برای نمایش در فرم
-        // $accommodation->general_facilities = json_decode($accommodation->general_facilities, true) ?? [];
-        // $accommodation->room_facilities = json_decode($accommodation->room_facilities, true) ?? [];
-        // $accommodation->private_facilities = json_decode($accommodation->private_facilities, true) ?? [];
-        // $accommodation->leisure_facilities = json_decode($accommodation->leisure_facilities, true) ?? [];
-        // $accommodation->entertainment_facilities = json_decode($accommodation->entertainment_facilities, true) ?? [];
-        // $accommodation->images = json_decode($accommodation->images, true) ?? [];
-
         return view('admin.editAccommodation', compact('accommodation', 'cities'));
     }
 
-    /**
-     * بروزرسانی اقامتگاه
-     */
-    // در متد update کنترلر AccommodationController
 
-    public function update(Request $request,$id)
+
+    public function update(Request $request, $id)
     {
         try {
             $accommodation = Accommodation::findOrFail($id);
@@ -197,11 +233,42 @@ class AccommodationsController extends Controller
                 'rooms_count' => 'nullable|integer|min:1',
                 'status' => 'nullable|in:active,inactive,pending,blocked',
                 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            ], [
+                
+                'title.required' => 'وارد کردن عنوان اقامتگاه الزامی است.',
+                'title.string' => 'عنوان اقامتگاه باید به صورت متن باشد.',
+                'title.max' => 'عنوان اقامتگاه نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+                'city_id.required' => 'انتخاب شهر الزامی است.',
+                'city_id.exists' => 'شهر انتخاب شده معتبر نیست.',
+
+                'address.required' => 'وارد کردن آدرس اقامتگاه الزامی است.',
+                'address.string' => 'آدرس اقامتگاه باید به صورت متن باشد.',
+
+                'description.required' => 'وارد کردن توضیحات اقامتگاه الزامی است.',
+                'description.string' => 'توضیحات اقامتگاه باید به صورت متن باشد.',
+
+                'check_in_time.required' => 'وارد کردن ساعت ورود الزامی است.',
+
+                'check_out_time.required' => 'وارد کردن ساعت خروج الزامی است.',
+
+                'floors.integer' => 'تعداد طبقات باید به صورت عدد باشد.',
+                'floors.min' => 'تعداد طبقات باید حداقل ۱ باشد.',
+
+                'rooms_count.integer' => 'تعداد اتاق‌ها باید به صورت عدد باشد.',
+                'rooms_count.min' => 'تعداد اتاق‌ها باید حداقل ۱ باشد.',
+
+                'status.in' => 'وضعیت انتخاب شده معتبر نیست. گزینه‌های مجاز: فعال، غیرفعال، در انتظار، مسدود',
+
+                
+                'images.*.image' => 'فایل انتخاب شده باید تصویر باشد.',
+                'images.*.mimes' => 'فرمت تصویر باید یکی از jpeg, png, jpg, webp باشد.',
+                'images.*.max' => 'حجم تصویر نباید بیشتر از ۵ مگابایت باشد.',
             ]);
 
             DB::beginTransaction();
 
-            // بروزرسانی اطلاعات پایه اقامتگاه
+
             $accommodation->title = $request->title;
             $accommodation->city_id = $request->city_id;
             $accommodation->address = $request->address;
@@ -214,14 +281,14 @@ class AccommodationsController extends Controller
             $accommodation->status = $request->status ?? $accommodation->status;
             $accommodation->rating = $request->rating;
 
-            // بروزرسانی امکانات
+
             $accommodation->general_facilities = $request->general_facilities ?? [];
             $accommodation->room_facilities = $request->room_facilities ?? [];
             $accommodation->private_facilities = $request->private_facilities ?? [];
             $accommodation->leisure_facilities = $request->leisure_facilities ?? [];
             $accommodation->entertainment_facilities = $request->entertainment_facilities ?? [];
 
-            // بروزرسانی تصاویر اقامتگاه
+
             $existingImages = $request->existing_images ? json_decode($request->existing_images, true) : [];
             $accommodation->images = $existingImages;
 
@@ -238,15 +305,14 @@ class AccommodationsController extends Controller
 
             $accommodation->save();
 
-            // ========== بروزرسانی اتاق‌ها ==========
+
             $existingRoomIds = [];
 
             if ($request->has('rooms') && is_array($request->rooms)) {
                 foreach ($request->rooms as $roomData) {
-                    // بررسی می‌کنیم آیا اتاق قبلاً وجود داشته یا جدید است
+
                     $room = null;
 
-                    // اگه id داشت و در دیتابیس وجود داشت
                     if (isset($roomData['id']) && !empty($roomData['id'])) {
                         $room = Room::find($roomData['id']);
                         if ($room) {
@@ -254,19 +320,19 @@ class AccommodationsController extends Controller
                         }
                     }
 
-                    // اگه اتاق پیدا نشد، یک اتاق جدید بساز
+
                     if (!$room) {
                         $room = new Room();
                         $room->accommodation_id = $accommodation->id;
                     }
 
-                    // مقداردهی فیلدها
+
                     $room->title = $roomData['title'] ?? '';
                     $room->capacity = $roomData['capacity'] ?? '';
                     $room->beds = $roomData['beds'] ?? '';
                     $room->price = $roomData['price'] ?? 0;
 
-                    // ذخیره تصویر جدید اتاق (اگه آپلود شده باشه)
+
                     if (isset($roomData['image']) && $roomData['image'] && $roomData['image'] instanceof \Illuminate\Http\UploadedFile) {
                         $filename = time() . '_' . uniqid() . '.' . $roomData['image']->getClientOriginalExtension();
                         $roomData['image']->storeAs('uplouds/rooms', $filename, 'public');
@@ -275,14 +341,14 @@ class AccommodationsController extends Controller
 
                     $room->save();
 
-                    // اضافه کردن id اتاق به لیست برای جلوگیری از حذف
+
                     if (!in_array($room->id, $existingRoomIds)) {
                         $existingRoomIds[] = $room->id;
                     }
                 }
             }
 
-            // حذف اتاق‌هایی که در فرم نیستند
+
             Room::where('accommodation_id', $accommodation->id)
                 ->whereNotIn('id', $existingRoomIds)
                 ->delete();
@@ -297,24 +363,22 @@ class AccommodationsController extends Controller
         }
     }
 
-    /**
-     * حذف اقامتگاه
-     */
-    public function destroy(int$id)
+    
+    public function destroy(int $id)
     {
         try {
             $accommodation = Accommodation::findOrFail($id);
             $title = $accommodation->title;
 
-            // حذف تصاویر از استوریج
+            
             $images = $accommodation->images ?? [];
 
             if (!empty($images) && is_array($images)) {
                 foreach ($images as $image) {
-                    // فقط نام فایل رو پاک کن (بدون uplouds/)
+                    
                     $cleanImage = str_replace(['uplouds/', 'uploads/'], '', $image);
 
-                    // مسیر درست برای حذف
+                    
                     $filePath = 'uplouds/' . $cleanImage;
 
                     if (Storage::disk('public')->exists($filePath)) {
@@ -334,50 +398,50 @@ class AccommodationsController extends Controller
 
 
 
-   public function downloadExcel()
-{
-    // دریافت داده‌ها
-    $accommodations = Accommodation::where('status', 'active')
-        ->with('city')
-        ->withMin('rooms', 'price')
-        ->get();
-    
-    // اسم فایل
-    $fileName = 'اقامتگاه_' . date('Y-m-d') . '.csv';
-    
-    // هدرهای دانلود
-    $headers = [
-        'Content-Type' => 'text/csv; charset=UTF-8',
-        'Content-Disposition' => "attachment; filename=\"$fileName\"",
-        'Pragma' => 'no-cache',
-        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-        'Expires' => '0',
-    ];
-    
-    // ساخت محتوا
-    $callback = function() use ($accommodations) {
-        $file = fopen('php://output', 'w');
+    public function downloadExcel()
+    {
         
-        // اضافه کردن BOM برای UTF-8 فارسی
-        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $accommodations = Accommodation::where('status', 'active')
+            ->with('city')
+            ->withMin('rooms', 'price')
+            ->get();
+
+       
+        $fileName = 'اقامتگاه_' . date('Y-m-d') . '.csv';
+
         
-        // هدرهای ستون‌ها
-        fputcsv($file, ['شناسه', 'عنوان اقامتگاه', 'شهر', 'وضعیت', 'حداقل قیمت (تومان)']);
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
         
-        // داده‌ها
-        foreach ($accommodations as $item) {
-            fputcsv($file, [
-                $item->id,
-                $item->title,
-                $item->city->name ?? 'نامشخص',
-                $item->status == 'active' ? 'فعال' : 'غیرفعال',
-                number_format($item->rooms_min_price ?? 0) . ' تومان'
-            ]);
-        }
-        
-        fclose($file);
-    };
-    
-    return response()->stream($callback, 200, $headers);
-}
+        $callback = function () use ($accommodations) {
+            $file = fopen('php://output', 'w');
+
+            
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+           
+            fputcsv($file, ['شناسه', 'عنوان اقامتگاه', 'شهر', 'وضعیت', 'حداقل قیمت (تومان)']);
+
+            
+            foreach ($accommodations as $item) {
+                fputcsv($file, [
+                    $item->id,
+                    $item->title,
+                    $item->city->name ?? 'نامشخص',
+                    $item->status == 'active' ? 'فعال' : 'غیرفعال',
+                    number_format($item->rooms_min_price ?? 0) . ' تومان'
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -15,12 +15,12 @@ class reserveController extends Controller
     {
         $query = Reservation::with(['user', 'accommodation', 'room', 'companions']);
         
-        // فیلتر بر اساس وضعیت
+       
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
         
-        // فیلتر بر اساس بازه زمانی
+       
         if ($request->filled('date_range')) {
             switch ($request->date_range) {
                 case 'today':
@@ -51,7 +51,7 @@ class reserveController extends Controller
         
         $reservations = $query->orderBy('created_at', 'desc')->paginate(10);
         
-        // آمار
+       
         $totalReservations = Reservation::count();
         $activeReservations = Reservation::where('status', 'confirmed')->count();
         $pendingReservations = Reservation::where('status', 'pending')->count();

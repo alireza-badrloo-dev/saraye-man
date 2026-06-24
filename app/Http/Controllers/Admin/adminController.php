@@ -13,13 +13,13 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $query = Admin::query();
-        // در متد index کنترلر AdminController
+
         $totalAdmins = Admin::count();
         $activeAdmins = Admin::where('status', 'active')->count();
         $blockedAdmins = Admin::where('status', 'blocked')->count();
         $superAdmins = Admin::where('role', 'super_admin')->count();
 
-       
+
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('first_name', 'like', '%' . $request->search . '%')
@@ -42,7 +42,7 @@ class AdminController extends Controller
         $activeAdmins = Admin::where('status', 'active')->count();
         $superAdmins = Admin::where('role', 'super_admin')->count();
 
-         return view('admin.admins', compact('admins', 'totalAdmins', 'activeAdmins', 'blockedAdmins', 'superAdmins'));
+        return view('admin.admins', compact('admins', 'totalAdmins', 'activeAdmins', 'blockedAdmins', 'superAdmins'));
     }
 
     public function create()
@@ -64,6 +64,41 @@ class AdminController extends Controller
             'birth_date' => 'nullable|string',
             'address' => 'nullable|string',
             'status' => 'required|in:active,inactive,blocked',
+        ], [
+
+            'first_name.required' => 'وارد کردن نام الزامی است.',
+            'first_name.string' => 'نام باید به صورت متن باشد.',
+            'first_name.max' => 'نام نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'last_name.required' => 'وارد کردن نام خانوادگی الزامی است.',
+            'last_name.string' => 'نام خانوادگی باید به صورت متن باشد.',
+            'last_name.max' => 'نام خانوادگی نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'email.required' => 'وارد کردن ایمیل الزامی است.',
+            'email.email' => 'فرمت ایمیل وارد شده معتبر نیست.',
+            'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
+
+            'mobile.string' => 'شماره موبایل باید به صورت متن باشد.',
+            'mobile.max' => 'شماره موبایل نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'password.required' => 'وارد کردن رمز عبور الزامی است.',
+            'password.min' => 'رمز عبور باید حداقل ۶ کاراکتر باشد.',
+            'password.confirmed' => 'تکرار رمز عبور با رمز عبور مطابقت ندارد.',
+
+            'role.required' => 'انتخاب نقش الزامی است.',
+            'role.in' => 'نقش انتخاب شده معتبر نیست. گزینه‌های مجاز: مدیرکل، مدیر، ناظر',
+
+            'gender.in' => 'جنسیت انتخاب شده معتبر نیست. گزینه‌های مجاز: مرد، زن',
+
+            'national_code.string' => 'کد ملی باید به صورت متن باشد.',
+            'national_code.max' => 'کد ملی نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'birth_date.string' => 'تاریخ تولد باید به صورت متن باشد.',
+
+            'address.string' => 'آدرس باید به صورت متن باشد.',
+
+            'status.required' => 'انتخاب وضعیت الزامی است.',
+            'status.in' => 'وضعیت انتخاب شده معتبر نیست. گزینه‌های مجاز: فعال، غیرفعال، مسدود',
         ]);
 
         $admin = new Admin();
@@ -118,6 +153,37 @@ class AdminController extends Controller
             'birth_date' => 'nullable|string',
             'address' => 'nullable|string',
             'status' => 'required|in:active,inactive,blocked',
+        ], [
+            
+            'first_name.required' => 'وارد کردن نام الزامی است.',
+            'first_name.string' => 'نام باید به صورت متن باشد.',
+            'first_name.max' => 'نام نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'last_name.required' => 'وارد کردن نام خانوادگی الزامی است.',
+            'last_name.string' => 'نام خانوادگی باید به صورت متن باشد.',
+            'last_name.max' => 'نام خانوادگی نباید بیشتر از ۲۵۵ کاراکتر باشد.',
+
+            'email.required' => 'وارد کردن ایمیل الزامی است.',
+            'email.email' => 'فرمت ایمیل وارد شده معتبر نیست.',
+            'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
+
+            'mobile.string' => 'شماره موبایل باید به صورت متن باشد.',
+            'mobile.max' => 'شماره موبایل نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'role.required' => 'انتخاب نقش الزامی است.',
+            'role.in' => 'نقش انتخاب شده معتبر نیست. گزینه‌های مجاز: مدیرکل، مدیر، ناظر',
+
+            'gender.in' => 'جنسیت انتخاب شده معتبر نیست. گزینه‌های مجاز: مرد، زن',
+
+            'national_code.string' => 'کد ملی باید به صورت متن باشد.',
+            'national_code.max' => 'کد ملی نباید بیشتر از ۲۰ کاراکتر باشد.',
+
+            'birth_date.string' => 'تاریخ تولد باید به صورت متن باشد.',
+
+            'address.string' => 'آدرس باید به صورت متن باشد.',
+
+            'status.required' => 'انتخاب وضعیت الزامی است.',
+            'status.in' => 'وضعیت انتخاب شده معتبر نیست. گزینه‌های مجاز: فعال، غیرفعال، مسدود',
         ]);
 
         $admin->first_name = $request->first_name;

@@ -13,17 +13,16 @@ class CommentsController extends Controller
     {
         $query = Comment::with(['user', 'accommodation']);
 
-        // فیلتر بر اساس وضعیت
+       
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // فیلتر بر اساس امتیاز
         if ($request->filled('rating')) {
             $query->where('rating', $request->rating);
         }
 
-        // فیلتر بر اساس اقامتگاه
+      
         if ($request->filled('accommodation_id')) {
             $query->where('accommodation_id', $request->accommodation_id);
         }

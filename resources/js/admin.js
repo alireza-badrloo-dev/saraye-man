@@ -1,3 +1,5 @@
+
+
 const sidebar = document.getElementById('sidebar'),
     sidebarCloseicon = document.getElementById('sidebar-close-icon'),
     sidebarOpenicon = document.getElementById('sidebar-open-icon'),

@@ -12,7 +12,7 @@ class PaymentController extends Controller
 {
     public function index($reservation_id)
     {
-        // نمایش صفحه پرداخت
+        
         $reservation = Reservation::with(['accommodation', 'room'])
             ->where('user_id', Auth::id())
             ->findOrFail($reservation_id);
@@ -23,7 +23,7 @@ class PaymentController extends Controller
         return view('user.payment', compact('reservation', 'checkInShamsi', 'checkOutShamsi'));
     }
 
-    // متد جدید برای شبیه‌سازی رفتن به درگاه
+   
     public function process(Request $request)
     {
         $reservation = Reservation::findOrFail($request->reservation_id);

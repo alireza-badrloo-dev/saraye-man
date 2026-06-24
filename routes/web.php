@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\accommodationsController;
 use App\Http\Controllers\admin\AdminContactController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CityController as AdminCityController;
 use App\Http\Controllers\Admin\commentsController;
 
@@ -38,7 +39,20 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
+use App\Http\Controllers\BlogController;
+
+
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/category/{category}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');
+
 Route::get('/accommodations', [accommodationController::class, 'index'])->name("accommodations");
+Route::get('/last-accommodations', [accommodationController::class, 'lastAccommodations'])->name('lastAccommodations');
+Route::get('/popular-accommodations', [accommodationController::class, 'popularAccommodations'])->name('popularAccommodations');
+Route::get('/cheapest-accommodations', [accommodationController::class, 'cheapestAccommodations'])->name('cheapestAccommodations');
+Route::get('/luxury-accommodations', [accommodationController::class, 'luxuryAccommodations'])->name('luxuryAccommodations');
+
 Route::get('/register', [AuthController::class, 'registerShow'])->name('user.register.show');
 Route::post('/register', [AuthController::class, 'register'])->name('user.register');
 Route::get('/login', [AuthController::class, 'loginShow'])->name('user.login.show');
@@ -71,7 +85,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard', [dasboardController::class, 'index'])->name("admin.dashboard");
 
 
-Route::get('/reports', [reportsController::class, 'index'])->name("admin.reports");
+
 
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
@@ -129,6 +143,18 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::delete('/contacts/{id}', [AdminContactController::class, 'destroy'])->name('contacts.destroy');
         Route::put('/contacts/{id}/toggle-read', [AdminContactController::class, 'toggleRead'])->name('contacts.toggle-read');
     });
+
+    // مدیریت وبلاگ
+    Route::get('/blogs', [AdminBlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/create', [AdminBlogController::class, 'create'])->name('blogs.create');
+    Route::post('/blogs', [AdminBlogController::class, 'store'])->name('blogs.store');
+    Route::get('/blogs/{id}', [AdminBlogController::class, 'show'])->name('blogs.show');
+    Route::get('/blogs/{id}/edit', [AdminBlogController::class, 'edit'])->name('blogs.edit');
+    Route::put('/blogs/{id}', [AdminBlogController::class, 'update'])->name('blogs.update');
+    Route::delete('/blogs/{id}', [AdminBlogController::class, 'destroy'])->name('blogs.destroy');
+    Route::post('/blogs/upload-image', [AdminBlogController::class, 'uploadImage'])->name('blogs.upload-image');
+    Route::post('/blogs/{id}/toggle-status', [AdminBlogController::class, 'toggleStatus'])->name('blogs.toggle-status');
+    Route::post('/blogs/{id}/toggle-featured', [AdminBlogController::class, 'toggleFeatured'])->name('blogs.toggle-featured');
 });
 
 Route::get('/test-export', function () {

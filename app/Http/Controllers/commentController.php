@@ -25,15 +25,13 @@ class commentController extends Controller
             ]);
             
             // بررسی اینکه کاربر قبلاً نظر نداده
-            $existingComment = Comment::where('user_id', Auth::id())
-                ->where('accommodation_id', $accommodation_id)
-                ->first();
+            $existingComment = Comment::where('user_id', Auth::id())->where('accommodation_id', $accommodation_id)->first();
             
             if ($existingComment) {
                 return back()->with('error', 'شما قبلاً برای این اقامتگاه نظر ثبت کرده‌اید.');
             }
             
-            // ایجاد نظر جدید
+           
             $comment = new Comment();
             $comment->user_id = Auth::id();
             $comment->accommodation_id = $accommodation_id;
@@ -42,7 +40,7 @@ class commentController extends Controller
             $comment->rating = $request->rating;
             $comment->positive_points = $request->positive_points;
             $comment->negative_points = $request->negative_points;
-            $comment->status = 'pending'; // در انتظار تایید ادمین
+            $comment->status = 'pending'; 
             $comment->save();
             
             return redirect()->back()->with('success', 'نظر شما با موفقیت ثبت شد. پس از تایید مدیریت نمایش داده می‌شود.');

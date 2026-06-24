@@ -96,7 +96,21 @@ h1 {
     position: relative;
 }
 
-
+.swiper-third {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.swiper-fourth {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.swiper-fifth {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
 
 #first img {
     width: 100%;

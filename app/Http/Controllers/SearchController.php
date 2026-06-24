@@ -12,10 +12,10 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        // شروع کوئری برای اقامتگاه‌های فعال
+        
         $query = Accommodation::where('status', 'active')->with(['city', 'rooms']);
         
-        // 1. جستجو بر اساس نام شهر یا عنوان اقامتگاه
+        
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -27,32 +27,32 @@ class SearchController extends Controller
             });
         }
         
-        // 2. فیلتر بر اساس تاریخ (اقامتگاه‌هایی که در بازه انتخابی رزرو نشده‌اند)
+       
         if ($request->filled('from_date') && $request->filled('to_date')) {
             try {
-                // تبدیل تاریخ شمسی به میلادی
+                
                 $fromDate = Jalalian::fromFormat('Y/m/d', $request->from_date)->toCarbon();
                 $toDate = Jalalian::fromFormat('Y/m/d', $request->to_date)->toCarbon();
                 
-                // پیدا کردن اقامتگاه‌هایی که در بازه تاریخ رزرو شده‌اند
+                
                 $bookedAccommodations = Reservation::where(function($q) use ($fromDate, $toDate) {
-                    // رزروهایی که تاریخ ورود یا خروجشان در بازه است
+                  
                     $q->whereBetween('check_in', [$fromDate, $toDate])
                       ->orWhereBetween('check_out', [$fromDate, $toDate])
-                      // یا رزروهایی که بازه انتخابی را کاملاً پوشش می‌دهند
+                     
                       ->orWhere(function($sq) use ($fromDate, $toDate) {
                           $sq->where('check_in', '<=', $fromDate)
                              ->where('check_out', '>=', $toDate);
                       });
                 })->pluck('accommodation_id')->unique();
                 
-                // حذف اقامتگاه‌های رزرو شده
+                
                 if ($bookedAccommodations->isNotEmpty()) {
                     $query->whereNotIn('id', $bookedAccommodations);
                 }
                 
             } catch (\Exception $e) {
-                // اگر تاریخ نامعتبر بود، خطا نده و ادامه بده
+                
             }
         }
         
@@ -69,12 +69,12 @@ class SearchController extends Controller
             });
         }
         
-        // 4. فیلتر بر اساس نام اقامتگاه (فیلتر سمت راست)
+        
         if ($request->filled('filter_name')) {
             $query->where('title', 'like', "%{$request->filter_name}%");
         }
         
-        // 5. فیلتر بر اساس امکانات
+       
         if ($request->filled('facilities')) {
             $facilities = explode(',', $request->facilities);
             foreach ($facilities as $facility) {
@@ -82,7 +82,7 @@ class SearchController extends Controller
             }
         }
         
-        // 6. فیلتر بر اساس امتیاز
+       
         if ($request->filled('rating')) {
             $rating = $request->rating;
             if ($rating >= 4.5) {
@@ -98,7 +98,6 @@ class SearchController extends Controller
             }
         }
         
-        // 7. مرتب‌سازی
         if ($request->filled('sort')) {
             switch ($request->sort) {
                 case 'price_asc':
@@ -117,10 +116,10 @@ class SearchController extends Controller
             $query->orderBy('created_at', 'desc');
         }
         
-        // محاسبه بیشترین قیمت برای نمایش در فیلتر
+        
         $maxPriceInDb = Room::max('price') ?? 10000000;
         
-        // اجرای کوئری با صفحه‌بندی
+        
         $accommodations = $query->paginate(12);
         
         return view('user.search-results', compact('accommodations', 'maxPriceInDb'));

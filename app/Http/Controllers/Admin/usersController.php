@@ -14,7 +14,7 @@ class usersController extends Controller
     {
         $query = User::query();
 
-        // فیلتر بر اساس وضعیت
+        
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -31,13 +31,13 @@ class usersController extends Controller
 
         $users = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        // آمار
+        
         $totalUsers = User::count();
         $activeUsers = User::where('status', 'active')->count();
         $newUsers = User::whereMonth('created_at', now()->month)->count();
         $blockedUsers = User::where('status', 'blocked')->count();
 
-        // محاسبه تعداد رزرو برای هر کاربر
+        
         foreach ($users as $user) {
             $user->reservations_count = Reservation::where('user_id', $user->id)->count();
         }

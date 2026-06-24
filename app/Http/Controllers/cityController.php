@@ -14,15 +14,13 @@ class CityController extends Controller
 {
     public function index($id, Request $request)
     {
-        // دریافت شهر
+        
         $city = City::findOrFail($id);
         
-        // شروع کوئری برای اقامتگاه‌های فعال شهر
-        $query = Accommodation::where('status', 'active')
-            ->where('city_id', $id)
-            ->with(['city', 'rooms']);
         
-        // 1. جستجو بر اساس عنوان
+        $query = Accommodation::where('status', 'active')->where('city_id', $id)->with(['city', 'rooms']);
+        
+        
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -31,7 +29,7 @@ class CityController extends Controller
             });
         }
         
-        // 2. فیلتر بر اساس تاریخ
+       
         if ($request->filled('from_date') && $request->filled('to_date')) {
             try {
                 $fromDate = Jalalian::fromFormat('Y/m/d', $request->from_date)->toCarbon();
@@ -54,27 +52,26 @@ class CityController extends Controller
             }
         }
         
-        // 3. فیلتر بر اساس محدوده قیمت (اصلاح شده مثل کدی که کار میکنه)
+        
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
         
-        // بررسی اینکه آیا فیلتر قیمت اعمال شده است
+        
         if (($minPrice !== null && $minPrice > 0) || ($maxPrice !== null && $maxPrice < 10000000)) {
             $minPrice = $minPrice ? (int)$minPrice : 0;
             $maxPrice = $maxPrice ? (int)$maxPrice : 10000000;
             
-            // استفاده از whereHas برای فیلتر بر اساس اتاق‌ها
+            
             $query->whereHas('rooms', function($q) use ($minPrice, $maxPrice) {
                 $q->whereBetween('price', [$minPrice, $maxPrice]);
             });
         }
         
-        // 4. فیلتر بر اساس نام اقامتگاه
         if ($request->filled('filter_name')) {
             $query->where('title', 'like', "%{$request->filter_name}%");
         }
         
-        // 5. فیلتر بر اساس امکانات
+    
         if ($request->filled('facilities')) {
             $facilities = explode(',', $request->facilities);
             foreach ($facilities as $facility) {
@@ -82,7 +79,7 @@ class CityController extends Controller
             }
         }
         
-        // 6. فیلتر بر اساس امتیاز
+        
         if ($request->filled('rating')) {
             $rating = (float)$request->rating;
             if ($rating >= 4.5) {
@@ -98,10 +95,10 @@ class CityController extends Controller
             }
         }
         
-        // 7. محاسبه بیشترین قیمت برای نمایش در فیلتر
+       
         $maxPriceInDb = Room::max('price') ?? 10000000;
         
-        // 8. مرتب‌سازی
+       
         if ($request->filled('sort')) {
             switch ($request->sort) {
                 case 'price_asc':
@@ -122,9 +119,9 @@ class CityController extends Controller
             $query->orderBy('created_at', 'desc');
         }
         
-        $accommodations = $query->paginate(12);
+        $accommodations = $query->paginate(9);
         
-        // حفظ پارامترهای فیلتر در صفحه‌بندی
+        
         $accommodations->appends($request->all());
         
         return view('user.city', compact('city', 'accommodations', 'maxPriceInDb'));

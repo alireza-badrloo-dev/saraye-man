@@ -26,10 +26,8 @@ class AuthController extends Controller
     if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
         $admin = Auth::guard('admin')->user();
         
-        // بروزرسانی آخرین زمان لاگین - روش جایگزین
-        DB::table('admins')
-            ->where('id', $admin->id)
-            ->update(['last_login_at' => now()]);
+        
+        DB::table('admins')->where('id', $admin->id)->update(['last_login_at' => now()]);
         
         return redirect()->intended(route('admin.dashboard'));
     }

@@ -14,7 +14,7 @@ class FavouriteController extends Controller
     {
         $user = Auth::user();
 
-        // گرفتن favourites از دیتابیس
+        
         $favourites = DB::table('users')->where('id', $user->id)->value('favourites');
         $favourites = $favourites ? json_decode($favourites, true) : [];
 
